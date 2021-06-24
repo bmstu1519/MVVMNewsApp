@@ -2,7 +2,7 @@ package com.zooro.mvvmnewsapp.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.zooro.mvvmnewsapp.Article
+import com.zooro.mvvmnewsapp.models.Article
 
 @Dao
 interface ArticleDao {

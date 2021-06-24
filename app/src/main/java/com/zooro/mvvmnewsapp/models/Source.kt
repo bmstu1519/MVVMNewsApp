@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp
+package com.zooro.mvvmnewsapp.models
 
 data class Source(
     val id: String,

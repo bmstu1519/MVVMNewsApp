@@ -1,6 +1,6 @@
 package com.zooro.mvvmnewsapp.api
 
-import com.zooro.mvvmnewsapp.NewsResponse
+import com.zooro.mvvmnewsapp.models.NewsResponse
 import com.zooro.mvvmnewsapp.util.Constants.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET

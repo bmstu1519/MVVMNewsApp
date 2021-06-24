@@ -1,8 +1,7 @@
-package com.zooro.mvvmnewsapp
+package com.zooro.mvvmnewsapp.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.zooro.mvvmnewsapp.Source
 
 @Entity(
     tableName = "articles"
