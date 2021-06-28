@@ -42,5 +42,9 @@
     <fragment
         android:id="@+id/articleNewsFragment"
         android:name="com.zooro.mvvmnewsapp.ui.fragments.ArticleNewsFragment"
-        android:label="ArticleNewsFragment" />
+        android:label="ArticleNewsFragment" >
+        <argument
+            android:name="article"
+            app:argType="com.zooro.mvvmnewsapp.models.Article" />
+    </fragment>
 </navigation>
