@@ -3,6 +3,7 @@ package com.zooro.mvvmnewsapp.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zooro.mvvmnewsapp.models.Article
 import com.zooro.mvvmnewsapp.models.NewsResponse
 import com.zooro.mvvmnewsapp.repository.NewsRepository
 import com.zooro.mvvmnewsapp.util.Resource
@@ -50,6 +51,16 @@ class NewsViewModel(
             }
         }
         return Resource.Error(response.message())
+    }
+
+    fun saveArticle(article: Article) = viewModelScope.launch {
+        newsRepository.upsert(article)
+    }
+
+    fun getSaveNews() = newsRepository.getSavedNews()
+
+    fun deleteArticle(article: Article) = viewModelScope.launch {
+        newsRepository.deleteArticle(article)
     }
 
 }
