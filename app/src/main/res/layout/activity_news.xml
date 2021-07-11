@@ -24,7 +24,7 @@
 
             <com.zooro.mvvmnewsapp.ui.custom.CheckableImageView
                 android:id="@+id/btn_settings"
-                style="@style/BottombarIcon"
+                style="@style/ToolbarSetting"
                 android:src="@drawable/ic_all_news"
                 android:layout_gravity="end" />
         </com.google.android.material.appbar.MaterialToolbar>
