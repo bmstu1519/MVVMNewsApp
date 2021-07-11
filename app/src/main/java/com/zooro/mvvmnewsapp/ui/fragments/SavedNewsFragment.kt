@@ -12,8 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.ui.NewsViewModel
-import kotlinx.android.synthetic.main.fragment_breaking_news.*
+import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
 import kotlinx.android.synthetic.main.fragment_saved_news.*
 
 class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {

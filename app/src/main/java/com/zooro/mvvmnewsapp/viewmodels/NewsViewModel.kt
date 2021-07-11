@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.ui
+package com.zooro.mvvmnewsapp.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -9,7 +9,6 @@ import android.net.NetworkCapabilities.*
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zooro.mvvmnewsapp.NewsApplication
 import com.zooro.mvvmnewsapp.models.Article
@@ -22,7 +21,7 @@ import java.io.IOException
 
 class NewsViewModel(
     app: Application,
-    val newsRepository: NewsRepository
+    private val newsRepository: NewsRepository
 ): AndroidViewModel(app) {
 
     val breakingNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
@@ -160,5 +159,10 @@ class NewsViewModel(
         }
         return false
     }
-
 }
+
+data class ArticleState(
+    val isDarkMode : Boolean = false,
+    val isShowMenu : Boolean = false
+
+)

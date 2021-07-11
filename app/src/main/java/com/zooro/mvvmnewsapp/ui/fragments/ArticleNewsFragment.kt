@@ -8,7 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.ui.NewsViewModel
+import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
 import kotlinx.android.synthetic.main.fragment_article.*
 
 class ArticleNewsFragment : Fragment(R.layout.fragment_article) {

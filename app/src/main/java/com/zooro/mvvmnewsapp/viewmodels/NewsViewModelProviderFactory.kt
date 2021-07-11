@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.ui
+package com.zooro.mvvmnewsapp.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
