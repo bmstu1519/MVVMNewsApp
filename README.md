@@ -1,7 +1,7 @@
 # MVVMNewsApp
-![me](https://github.com/bmstu1519/gifs/blob/master/mvvmNewsApp.gif)
-used libraries:__
-Architectural Components__
+![me](https://github.com/bmstu1519/gifs/blob/master/mvvmNewsApp.gif)<br />
+used libraries:<br />
+Architectural Components<br />
 Room
 Kotlin Extensions and Coroutines support for Room
 Coroutines
