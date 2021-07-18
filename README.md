@@ -1,12 +1,12 @@
 # MVVMNewsApp
 ![me](https://github.com/bmstu1519/gifs/blob/master/mvvmNewsApp.gif)<br />
-used libraries:<br />
+**Used libraries:**<br />
 Architectural Components<br />
-Room
-Kotlin Extensions and Coroutines support for Room
-Coroutines
-Coroutine Lifecycle Scopes
-Retrofit
-Navigation Components
-Glide
-Material Design
+Room<br />
+Kotlin Extensions and Coroutines support for Room<br />
+Coroutines<br />
+Coroutine Lifecycle Scopes<br />
+Retrofit<br />
+Navigation Components<br />
+Glide<br />
+Material Design<br />
