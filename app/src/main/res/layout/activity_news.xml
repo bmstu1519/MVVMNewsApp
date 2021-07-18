@@ -19,8 +19,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:titleTextColor="@android:color/white">
+            app:title="@string/app_name">
 
             <com.zooro.mvvmnewsapp.ui.custom.CheckableImageView
                 android:id="@+id/btn_settings"
@@ -50,6 +49,8 @@
             android:layout_marginEnd="10dp"
             android:layout_gravity="end"
             android:elevation="4dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <androidx.fragment.app.FragmentContainerView
@@ -71,8 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_behavior="murt.shoppinglistapp.ui.BottomNavigationBehavior"
-
         >
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
