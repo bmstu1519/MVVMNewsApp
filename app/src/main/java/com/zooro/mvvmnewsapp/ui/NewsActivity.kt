@@ -3,6 +3,7 @@ package com.zooro.mvvmnewsapp.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -27,6 +28,9 @@ class NewsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news)
+        setupSubmenu()
+
+        window.statusBarColor = ContextCompat.getColor(this,R.color.color_primary)
 
         val newsRepository = NewsRepository(ArticleDatabase.invoke(this))
         val viewModelProviderFactory = NewsViewModelProviderFactory(application,newsRepository)
@@ -35,41 +39,21 @@ class NewsActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.newsHavHostFragment) as NavHostFragment
         navController = navHostFragment.findNavController()
 
-
         bottomNavigationView.setupWithNavController(navController)
         setupToolbar(navController)
 
-//        val bottom = findViewById<SwitchMaterial>(R.id.switchBottom)
-//        bottom.setOnCheckedChangeListener { _, isChecked ->
-//            if (isChecked){
-//                Toast.makeText(this, "CHECK",Toast.LENGTH_LONG).show()
-//
-//            } else {
-//                Toast.makeText(this, "NOT CHECK",Toast.LENGTH_LONG).show()
-//
-//            }
-//
-//        }
+        viewModel.state
+
+        viewModel.observeState(this){
+            renderUi(it)
+        }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.toolbar_menu, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when(item.itemId){
-//            R.id.settings -> {
-//                Toast.makeText(this, "SETTINGS",Toast.LENGTH_LONG).show()
-//                true
-//            }
-//            else -> {
-//                Toast.makeText(this, "SETTINGS",Toast.LENGTH_LONG).show()
-//                true
-//            }
-//        }
-//    }
+    private fun setupSubmenu(){
+        switch_mode.setOnClickListener { viewModel.handleNightMode() }
+        btn_settings.setOnClickListener { viewModel.handleToggleMenu() }
+
+    }
 
     private fun setupToolbar(navController: NavController){
         setSupportActionBar(toolbar)
@@ -89,8 +73,6 @@ class NewsActivity : AppCompatActivity() {
         delegate.localNightMode =
             if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
-
-
 
     }
 
