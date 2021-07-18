@@ -10,10 +10,10 @@
         <action
             android:id="@+id/action_breakingNewsFragment_to_articleNewsFragment"
             app:destination="@id/articleNewsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_in_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_in_right" />
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/searchNewsFragment"
@@ -22,10 +22,10 @@
         <action
             android:id="@+id/action_searchNewsFragment_to_articleNewsFragment"
             app:destination="@id/articleNewsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_in_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_in_right" />
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/savedNewsFragment"
@@ -34,10 +34,10 @@
         <action
             android:id="@+id/action_savedNewsFragment_to_articleNewsFragment"
             app:destination="@id/articleNewsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_in_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_in_right" />
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_open_exit" />
     </fragment>
     <fragment
         android:id="@+id/articleNewsFragment"
