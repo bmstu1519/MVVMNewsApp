@@ -10,3 +10,6 @@ Retrofit<br />
 Navigation Components<br />
 Glide<br />
 Material Design<br />
+<br />
+
+***the application as in the gif is in the zOoro branch***
