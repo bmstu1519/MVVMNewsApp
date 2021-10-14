@@ -1,7 +1,7 @@
 # MVVMNewsApp
 ![me](https://github.com/bmstu1519/gifs/blob/master/mvvmNewsApp.gif)<br />
-**What used:**<br />
-Аpplication Аrchitecture:<br />
+
+**Аpplication Аrchitecture:**<br />
 MVVM
 
 **Architectural Components:**<br />
