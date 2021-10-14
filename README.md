@@ -4,18 +4,23 @@
 Аpplication Аrchitecture:<br />
 MVVM
 
-Architectural Components:<br />
+**Architectural Components:**<br />
 Lifecycle <br />
 LiveData
 AndroidVIewModel
 Navigation Components
 
+**DataBase:**<br />
 Room<br />
-Kotlin Extensions and Coroutines support for Room<br />
-Coroutines<br />
-Coroutine Lifecycle Scopes<br />
+
+**REST CLient:**<br />
 Retrofit<br />
 
+**For Asynchronous Communication:**<br />
+Coroutines<br />
+Coroutine Lifecycle Scopes<br />
+
+DiffUtil<br />
 Glide<br />
 Material Design<br />
 <br />
