@@ -6,9 +6,9 @@ MVVM
 
 **Architectural Components:**<br />
 Lifecycle <br />
-LiveData
-AndroidVIewModel
-Navigation Components
+LiveData<br />
+AndroidVIewModel<br />
+Navigation Components<br />
 
 **DataBase:**<br />
 Room<br />
