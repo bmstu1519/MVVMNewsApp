@@ -11,12 +11,12 @@ AndroidVIewModel<br />
 Navigation Components<br />
 
 **DataBase:**<br />
-Room<br />
+SQLlite(ROOM wrapper)<br />
 
 **REST CLient:**<br />
 Retrofit<br />
 
-**For Asynchronous Communication:**<br />
+**For asynchronous Communication:**<br />
 Coroutines<br />
 Coroutine Lifecycle Scopes<br />
 
