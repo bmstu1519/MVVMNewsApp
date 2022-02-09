@@ -51,7 +51,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             job = MainScope().launch {
                 delay(SEARCH_NEWS_TIME_DELAY)
                 editable?.let {
-                    if (editable.toString().isNotEmpty()) {
+                    if (editable.toString().length > 2) {
                         viewModel.searchNews(editable.toString())
                     }
                 }
