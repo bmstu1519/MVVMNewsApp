@@ -28,6 +28,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: NewsAdapter
+    private lateinit var searchQuery: String
     //private val TAG = "SearchNewsFragment"
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,11 +51,13 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             job?.cancel()
             job = MainScope().launch {
                 delay(SEARCH_NEWS_TIME_DELAY)
-                editable?.let {
-                    if (editable.toString().isNotEmpty()) {
-                        viewModel.searchNews(editable.toString())
+                    editable?.let {
+                        if (editable.toString().length > 2) {
+                            searchQuery = editable.toString()
+                            viewModel.searchNewsPage = 1
+                            viewModel.searchNews(searchQuery)
+                        }
                     }
-                }
             }
         }
 
@@ -73,8 +76,8 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 }
                 is Resource.Error -> {
                     hideProgressBar()
-                    response.message?.let { message ->
-                        Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG).show()
+                    response.message?.run {
+                        Toast.makeText(activity, "You have requested too many results.\nDeveloper accounts are limited to a max of 100 results.", Toast.LENGTH_LONG).show()
                     }
                 }
                 is Resource.Loading -> {
@@ -125,7 +128,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                     isTotalMoreThanVisible && isScrolling
 
             if (shouldPaginate){
-                viewModel.searchNews(etSearch.text.toString())
+                viewModel.searchNews(searchQuery)
                 isScrolling = false
             }
 

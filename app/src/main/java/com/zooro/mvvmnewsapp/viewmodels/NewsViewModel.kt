@@ -7,7 +7,8 @@ import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.os.Build
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.zooro.mvvmnewsapp.NewsApplication
 import com.zooro.mvvmnewsapp.models.Article
 import com.zooro.mvvmnewsapp.models.NewsResponse
@@ -20,15 +21,14 @@ import java.io.IOException
 class NewsViewModel(
     app: Application,
     private val newsRepository: NewsRepository
-): BaseViewModel<ArticleState>(app,ArticleState()) {
+) : BaseViewModel<ArticleState>(app, ArticleState()) {
 
     val breakingNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var breakingNewsPage = 1
     var breakingNewsResponse: NewsResponse? = null
 
     val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    var searchNewsPage = 1
-    var searchNewsResponse: NewsResponse? = null
+    var searchNewsPage : Int = 1
 
 
     init {
@@ -54,11 +54,12 @@ class NewsViewModel(
     fun searchNews(searchQuery: String) = viewModelScope.launch {
         safeSearchNewsCall(searchQuery)
     }
-    private fun handleBreakingNewsResponses(response: Response<NewsResponse>) : Resource<NewsResponse>{
-        if (response.isSuccessful){
-            response.body()?.let{ resultResponse ->
+
+    private fun handleBreakingNewsResponses(response: Response<NewsResponse>): Resource<NewsResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
                 breakingNewsPage++
-                if (breakingNewsResponse == null){
+                if (breakingNewsResponse == null) {
                     breakingNewsResponse = resultResponse
                 } else {
                     val oldArticles = breakingNewsResponse?.articles
@@ -71,18 +72,11 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
-    private fun handleSearchNewsResponses(response: Response<NewsResponse>) : Resource<NewsResponse>{
-        if (response.isSuccessful){
-            response.body()?.let{ resultResponse ->
+    private fun handleSearchNewsResponses(response: Response<NewsResponse>, searchQuery: String): Resource<NewsResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
                 searchNewsPage++
-                if (searchNewsResponse == null){
-                    searchNewsResponse = resultResponse
-                } else {
-                    val oldArticles = searchNewsResponse?.articles
-                    val newArticles = resultResponse.articles
-                    oldArticles?.addAll(newArticles)
-                }
-                return Resource.Success(searchNewsResponse ?: resultResponse)
+                return Resource.Success(resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -94,86 +88,90 @@ class NewsViewModel(
 
     fun getSaveNews() = newsRepository.getSavedNews()
 
+    suspend fun checkSaveArticle(url: String) : Boolean = newsRepository.checkSavedArticle(url) > 0
+
     fun deleteArticle(article: Article) = viewModelScope.launch {
-        newsRepository.deleteArticle(article)
-    }
-    private suspend fun safeSearchNewsCall(searchQuery: String){
-        searchNews.postValue(Resource.Loading())
-        try {
-            //если есть интернет соединение, то делаем запрос к API
-            if (hasInternetConnection()){
-                val response = newsRepository.searchNews(searchQuery, searchNewsPage)
-                searchNews.postValue(handleSearchNewsResponses(response))
-            } else {
-                searchNews.postValue(Resource.Error("No internet connection"))
-            }
-
-        }catch (t: Throwable){
-            //в теории на этап этапе могут появится только 2 ошибки
-            when(t){
-                //ошибка подключения к интернету
-                is IOException -> searchNews.postValue(Resource.Error("Network Failure"))
-                //ошибка преобразования json -> kotlin object
-                else -> searchNews.postValue(Resource.Error("Conversion Error"))
-            }
+            newsRepository.deleteArticle(article)
         }
-    }
 
-    private suspend fun safeBreakingNewsCall(countryCode: String){
-        breakingNews.postValue(Resource.Loading())
-        try {
-            //если есть интернет соединение, то делаем запрос к API
-            if (hasInternetConnection()){
-                val response = newsRepository.getBreakingNews(countryCode, breakingNewsPage)
-                breakingNews.postValue(handleBreakingNewsResponses(response))
-            } else {
-                breakingNews.postValue(Resource.Error("No internet connection"))
-            }
+        private suspend fun safeSearchNewsCall(searchQuery: String) {
+            searchNews.postValue(Resource.Loading())
+            try {
+                //если есть интернет соединение, то делаем запрос к API
+                if (hasInternetConnection()) {
+                    val response = newsRepository.searchNews(searchQuery, searchNewsPage)
+                    searchNews.postValue(handleSearchNewsResponses(response, searchQuery))
+                } else {
+                    searchNews.postValue(Resource.Error("No internet connection"))
+                }
 
-        }catch (t: Throwable){
-            //в теории на этап этапе могут появится только 2 ошибки
-            when(t){
-                //ошибка подключения к интернету
-                is IOException -> breakingNews.postValue(Resource.Error("Network Failure"))
-                //ошибка преобразования json -> kotlin object
-                else -> breakingNews.postValue(Resource.Error("Conversion Error"))
-            }
-        }
-    }
-
-    @SuppressLint("ServiceCast")
-    private fun hasInternetConnection() : Boolean {
-        val connectivityManager = getApplication<NewsApplication>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
-        //условие нужно для корректного определения подключения к интернету
-        // для sdk < 23 выполняется блок else
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            val activeNetwork = connectivityManager.activeNetwork ?: return false
-            //позволяет проверить подключение к разным сетям,перебор вариантов происходит в when
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-            return when{
-                capabilities.hasTransport(TRANSPORT_WIFI) -> true
-                capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
-                capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
-                else -> false
-            }
-        } else {
-            connectivityManager.activeNetworkInfo?.run {
-                return when(type){
-                    TYPE_WIFI -> true
-                    TYPE_MOBILE -> true
-                    TYPE_ETHERNET -> true
-                    else -> false
+            } catch (t: Throwable) {
+                //в теории на этап этапе могут появится только 2 ошибки
+                when (t) {
+                    //ошибка подключения к интернету
+                    is IOException -> searchNews.postValue(Resource.Error("Network Failure"))
+                    //ошибка преобразования json -> kotlin object
+                    else -> searchNews.postValue(Resource.Error("Conversion Error"))
                 }
             }
         }
-        return false
+
+        private suspend fun safeBreakingNewsCall(countryCode: String) {
+            breakingNews.postValue(Resource.Loading())
+            try {
+                //если есть интернет соединение, то делаем запрос к API
+                if (hasInternetConnection()) {
+                    val response = newsRepository.getBreakingNews(countryCode, breakingNewsPage)
+                    breakingNews.postValue(handleBreakingNewsResponses(response))
+                } else {
+                    breakingNews.postValue(Resource.Error("No internet connection"))
+                }
+
+            } catch (t: Throwable) {
+                //в теории на этап этапе могут появится только 2 ошибки
+                when (t) {
+                    //ошибка подключения к интернету
+                    is IOException -> breakingNews.postValue(Resource.Error("Network Failure"))
+                    //ошибка преобразования json -> kotlin object
+                    else -> breakingNews.postValue(Resource.Error("Conversion Error"))
+                }
+            }
+        }
+
+        @SuppressLint("ServiceCast")
+        private fun hasInternetConnection(): Boolean {
+            val connectivityManager = getApplication<NewsApplication>().getSystemService(
+                Context.CONNECTIVITY_SERVICE
+            ) as ConnectivityManager
+            //условие нужно для корректного определения подключения к интернету
+            // для sdk < 23 выполняется блок else
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val activeNetwork = connectivityManager.activeNetwork ?: return false
+                //позволяет проверить подключение к разным сетям,перебор вариантов происходит в when
+                val capabilities =
+                    connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+                return when {
+                    capabilities.hasTransport(TRANSPORT_WIFI) -> true
+                    capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
+                    capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                connectivityManager.activeNetworkInfo?.run {
+                    return when (type) {
+                        TYPE_WIFI -> true
+                        TYPE_MOBILE -> true
+                        TYPE_ETHERNET -> true
+                        else -> false
+                    }
+                }
+            }
+            return false
+        }
     }
 
-}
 
 data class ArticleState(
-    val isDarkMode : Boolean = false,
-    val isShowMenu : Boolean = false
+    val isDarkMode: Boolean = false,
+    val isShowMenu: Boolean = false
 )

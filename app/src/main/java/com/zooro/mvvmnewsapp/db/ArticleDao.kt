@@ -10,9 +10,12 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(article: Article): Long
 
+    @Delete
+    suspend fun deleteArticle(article: Article)
+
     @Query("SELECT * FROM articles")
     fun getAllArticles(): LiveData<List<Article>>
 
-    @Delete
-    suspend fun deleteArticle(article: Article)
+    @Query("SELECT COUNT(*) FROM articles WHERE url=:url")
+    suspend fun getArticleUrl(url: String) : Int
 }
