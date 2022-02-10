@@ -1,11 +1,39 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="android:textColorSecondary">@color/color_accent</item>
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryVariant">@color/color_primary_dark</item>
+        <item name="colorOnPrimary">@color/color_title</item>
+        <item name="colorSecondary">@color/color_accent</item>
+        <item name="colorSecondaryVariant">@color/color_accent_dark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorError">#F44336</item>
+        <item name="colorOnError">#FFFFFF</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnSurface">@color/color_on_surface</item>
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="android:textColorPrimary">@color/color_title</item>
+        <item name="android:windowBackground">@color/color_surface</item>
+
+    </style>
+    <style name="ArticleBarsTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="colorPrimary">@color/color_article_bar</item>
+        <item name="colorOnPrimary">@color/color_on_article_bar</item>
+        <item name="colorSurface">@color/color_article_bar</item>
+        <item name="colorControlNormal">@color/color_on_article_bar</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarSetting">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:tint">@color/tint_color</item>
+        <item name="android:background">@drawable/ripple</item>
     </style>
 
 </resources>

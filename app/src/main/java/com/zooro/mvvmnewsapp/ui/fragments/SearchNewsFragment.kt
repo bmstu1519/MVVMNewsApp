@@ -1,7 +1,6 @@
 package com.zooro.mvvmnewsapp.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AbsListView
 import android.widget.Toast
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.ui.NewsViewModel
+import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
 import com.zooro.mvvmnewsapp.util.Constants
 import com.zooro.mvvmnewsapp.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import com.zooro.mvvmnewsapp.util.Resource

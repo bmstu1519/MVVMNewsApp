@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.ui
+package com.zooro.mvvmnewsapp.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -7,10 +7,7 @@ import android.net.ConnectivityManager
 import android.net.ConnectivityManager.*
 import android.net.NetworkCapabilities.*
 import android.os.Build
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.zooro.mvvmnewsapp.NewsApplication
 import com.zooro.mvvmnewsapp.models.Article
 import com.zooro.mvvmnewsapp.models.NewsResponse
@@ -22,8 +19,8 @@ import java.io.IOException
 
 class NewsViewModel(
     app: Application,
-    val newsRepository: NewsRepository
-): AndroidViewModel(app) {
+    private val newsRepository: NewsRepository
+): BaseViewModel<ArticleState>(app,ArticleState()) {
 
     val breakingNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     var breakingNewsPage = 1
@@ -33,8 +30,21 @@ class NewsViewModel(
     var searchNewsPage = 1
     var searchNewsResponse: NewsResponse? = null
 
+
     init {
         getBreakingNews("us")
+    }
+
+    fun handleToggleMenu() {
+        updateState {
+            it.copy(isShowMenu = !it.isShowMenu)
+        }
+    }
+
+    fun handleNightMode() {
+        updateState {
+            it.copy(isDarkMode = !it.isDarkMode)
+        }
     }
 
     fun getBreakingNews(countryCode: String) = viewModelScope.launch {
@@ -162,3 +172,8 @@ class NewsViewModel(
     }
 
 }
+
+data class ArticleState(
+    val isDarkMode : Boolean = false,
+    val isShowMenu : Boolean = false
+)
