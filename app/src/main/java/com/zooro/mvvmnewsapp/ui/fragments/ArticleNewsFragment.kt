@@ -33,9 +33,9 @@ class ArticleNewsFragment : Fragment(R.layout.fragment_article) {
 
         fab.setOnClickListener {
             runBlocking {
-                val isEntityAvailable = viewModel.checkSaveArticle(article.url ?:"url_is_null")
+                val isArticleSaved = viewModel.checkSaveArticle(article.url ?:"url_is_null")
 
-                if (isEntityAvailable){
+                if (isArticleSaved){
                     Snackbar.make(view, "You are already save this article", Snackbar.LENGTH_SHORT).show()
                 } else {
                     viewModel.saveArticle(article)
