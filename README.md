@@ -1,28 +1,23 @@
 # MVVMNewsApp
 ![me](https://github.com/bmstu1519/gifs/blob/master/mvvmNewsApp.gif)<br />
 
-**Аpplication Аrchitecture:**<br />
-MVVM
+**Description:**<br />
+The application consists of 4 fragments and one activity.<br />
 
-**Architectural Components:**<br />
-Lifecycle <br />
-LiveData<br />
-AndroidVIewModel<br />
-Navigation Components<br />
+**Screens:**<br />
+- Show the latest news;<br />
+- Search for news at the request of the user;<br />
+- Save your favorite news.
 
-**DataBase:**<br />
-SQLlite(ROOM wrapper)<br />
+**Stack:**<br />
+MVVM, DiffUtil, Glide, Coroutines, Retrofit, OkHttp, Room<br />
 
-**REST CLient:**<br />
-Retrofit<br />
+**What else is interesting:**<br />
+- Made a custom animation toolbar;<br />
+- The application supports dark theme;<br />
+- Since 1 activity, I implemented navigation between fragments using the Google Navigation Component library;<br />
+- For binding in fragments, I used Kotlin Extensions;<br />
 
-**For asynchronous Communication:**<br />
-Coroutines<br />
-Coroutine Lifecycle Scopes<br />
-
-DiffUtil<br />
-Glide<br />
-Material Design<br />
-<br />
-
-***the application as in the gif is in the zOoro branch***
+**If you want to run the application:**<br />
+- git clone https://github.com/bmstu1519/MVVMNewsApp
+- git checkout zOoro
