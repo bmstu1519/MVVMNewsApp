@@ -7,7 +7,7 @@ The application consists of 4 fragments and one activity.<br />
 **Screens:**<br />
 - Show the latest news;<br />
 - Search for news at the request of the user;<br />
-- Save your favorite news.
+- Save your favorite news;
 
 **Stack:**<br />
 MVVM, DiffUtil, Glide, Coroutines, Retrofit, OkHttp, Room<br />
