@@ -17,7 +17,3 @@ MVVM, DiffUtil, Glide, Coroutines, Retrofit, OkHttp, Room<br />
 - The application supports dark theme;<br />
 - Since 1 activity, I implemented navigation between fragments using the Google Navigation Component library;<br />
 - For binding in fragments, I used Kotlin Extensions;<br />
-
-**If you want to run the application:**<br />
-- git clone https://github.com/bmstu1519/MVVMNewsApp
-- git checkout zOoro
