@@ -1,0 +1,51 @@
+[versions]
+agp = "8.1.4"
+kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
+appcompat = "1.6.1"
+coreKtx = "1.12.0"
+constraintLayout = "2.1.4"
+junit = "4.13.2"
+androidxJunit = "1.1.5"
+espressoCore = "3.5.1"
+lifecycle = "2.6.2"
+room = "2.6.1"
+coroutines = "1.7.3"
+retrofit = "2.6.0"
+okhttp = "4.5.0"
+nav_graph = "2.7.6"
+glide = "4.16.0"
+material = "1.11.0"
+webkit = "1.9.0"
+
+[libraries]
+kotlinStdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+coreKtx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidxJunit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+espressoCore = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+lifecycleViewModelKtx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycleRuntimeKtx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+roomRuntime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomKtx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+coroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+converterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+loggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glideCompiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "nav_graph" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "nav_graph" }
+androidx-navigation-safeargs = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "nav_graph" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "nav_graph" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
