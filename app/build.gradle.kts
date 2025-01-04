@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-//    alias(libs.plugins.kotlin.kapt)
-//    id("kotlin-kapt")
-//    id("androidx.navigation.safeargs.kotlin")
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -42,6 +41,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -60,7 +63,7 @@ dependencies {
     // Room
     implementation(libs.roomRuntime)
     implementation(libs.roomKtx)
-//    kapt(libs.roomCompiler)
+    ksp(libs.roomCompiler)
 
     // Kotlin Extensions and Coroutines support for Room
     implementation(libs.roomKtx)
@@ -79,12 +82,12 @@ dependencies {
     implementation(libs.loggingInterceptor)
 
     // Navigation Components
-    implementation(libs.navigationFragmentKtx)
-    implementation(libs.navigationUiKtx)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.navigation.fragment)
 
     // Glide
     implementation(libs.glide)
-//    kapt(libs.glideCompiler)
+    ksp(libs.glideCompiler)
 
     // Material Design
     implementation(libs.material)
