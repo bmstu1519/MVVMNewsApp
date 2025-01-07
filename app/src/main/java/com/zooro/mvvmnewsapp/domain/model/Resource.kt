@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.util
+package com.zooro.mvvmnewsapp.domain.model
 
 sealed class Resource<T>(
     val data: T? = null,
