@@ -1,8 +1,8 @@
-package com.zooro.mvvmnewsapp.repository
+package com.zooro.mvvmnewsapp.domain.repository
 
-import com.zooro.mvvmnewsapp.api.RetrofitInstance
-import com.zooro.mvvmnewsapp.db.ArticleDatabase
-import com.zooro.mvvmnewsapp.models.Article
+import com.zooro.mvvmnewsapp.data.api.RetrofitInstance
+import com.zooro.mvvmnewsapp.data.db.ArticleDatabase
+import com.zooro.mvvmnewsapp.data.models.ArticleDto
 
 class NewsRepository(
     val db: ArticleDatabase
@@ -13,9 +13,9 @@ class NewsRepository(
     suspend fun searchNews(searchQuery: String, pageNumber: Int) =
         RetrofitInstance.api.searchForNews(searchQuery,pageNumber)
 
-    suspend fun upsert(article: Article) = db.getArticleDao().upsert(article)
+    suspend fun upsert(article: ArticleDto) = db.getArticleDao().upsert(article)
 
-    suspend fun deleteArticle(article: Article) = db.getArticleDao().deleteArticle(article)
+    suspend fun deleteArticle(article: ArticleDto) = db.getArticleDao().deleteArticle(article)
 
     fun getSavedNews() = db.getArticleDao().getAllArticles()
 

@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
-import com.zooro.mvvmnewsapp.adapters.NewsAdapter
+import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentSavedNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 
 class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 

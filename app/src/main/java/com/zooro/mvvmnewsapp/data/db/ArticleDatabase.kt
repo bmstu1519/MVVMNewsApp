@@ -1,11 +1,11 @@
-package com.zooro.mvvmnewsapp.db
+package com.zooro.mvvmnewsapp.data.db
 
 import android.content.Context
 import androidx.room.*
-import com.zooro.mvvmnewsapp.models.Article
+import com.zooro.mvvmnewsapp.data.models.ArticleDto
 
 @Database(
-    entities = [Article::class],
+    entities = [ArticleDto::class],
     version = 1
 )
 

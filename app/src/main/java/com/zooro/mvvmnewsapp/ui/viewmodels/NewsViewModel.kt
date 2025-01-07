@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.viewmodels
+package com.zooro.mvvmnewsapp.ui.viewmodels
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -10,10 +10,10 @@ import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.zooro.mvvmnewsapp.NewsApplication
-import com.zooro.mvvmnewsapp.models.Article
-import com.zooro.mvvmnewsapp.models.NewsResponse
-import com.zooro.mvvmnewsapp.repository.NewsRepository
-import com.zooro.mvvmnewsapp.util.Resource
+import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.data.models.NewsResponseDto
+import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
+import com.zooro.mvvmnewsapp.domain.model.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -23,11 +23,11 @@ class NewsViewModel(
     private val newsRepository: NewsRepository
 ) : BaseViewModel<ArticleState>(app, ArticleState()) {
 
-    val breakingNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    val breakingNews: MutableLiveData<Resource<NewsResponseDto>> = MutableLiveData()
     var breakingNewsPage = 1
-    var breakingNewsResponse: NewsResponse? = null
+    var breakingNewsResponse: NewsResponseDto? = null
 
-    val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    val searchNews: MutableLiveData<Resource<NewsResponseDto>> = MutableLiveData()
     var searchNewsPage : Int = 1
 
 
@@ -55,7 +55,7 @@ class NewsViewModel(
         safeSearchNewsCall(searchQuery)
     }
 
-    private fun handleBreakingNewsResponses(response: Response<NewsResponse>): Resource<NewsResponse> {
+    private fun handleBreakingNewsResponses(response: Response<NewsResponseDto>): Resource<NewsResponseDto> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 breakingNewsPage++
@@ -72,7 +72,7 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
-    private fun handleSearchNewsResponses(response: Response<NewsResponse>, searchQuery: String): Resource<NewsResponse> {
+    private fun handleSearchNewsResponses(response: Response<NewsResponseDto>, searchQuery: String): Resource<NewsResponseDto> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
                 searchNewsPage++
@@ -82,7 +82,7 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
-    fun saveArticle(article: Article) = viewModelScope.launch {
+    fun saveArticle(article: ArticleDto) = viewModelScope.launch {
         newsRepository.upsert(article)
     }
 
@@ -90,7 +90,7 @@ class NewsViewModel(
 
     suspend fun checkSaveArticle(url: String) : Boolean = newsRepository.checkSavedArticle(url) > 0
 
-    fun deleteArticle(article: Article) = viewModelScope.launch {
+    fun deleteArticle(article: ArticleDto) = viewModelScope.launch {
             newsRepository.deleteArticle(article)
         }
 

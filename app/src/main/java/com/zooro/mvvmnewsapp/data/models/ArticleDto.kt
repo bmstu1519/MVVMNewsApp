@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.models
+package com.zooro.mvvmnewsapp.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,7 +7,7 @@ import java.io.Serializable
 @Entity(
     tableName = "articles"
 )
-data class Article(
+data class ArticleDto(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
     val author: String?,

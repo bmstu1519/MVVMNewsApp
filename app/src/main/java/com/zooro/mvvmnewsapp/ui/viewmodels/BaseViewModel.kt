@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.viewmodels
+package com.zooro.mvvmnewsapp.ui.viewmodels
 
 import android.app.Application
 import androidx.annotation.UiThread

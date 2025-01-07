@@ -13,7 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentArticleBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 import kotlinx.coroutines.runBlocking
 
 class ArticleNewsFragment : Fragment(R.layout.fragment_article) {

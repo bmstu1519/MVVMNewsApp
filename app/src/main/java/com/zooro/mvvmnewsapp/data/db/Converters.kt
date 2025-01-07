@@ -1,7 +1,7 @@
-package com.zooro.mvvmnewsapp.db
+package com.zooro.mvvmnewsapp.data.db
 
 import androidx.room.TypeConverter
-import com.zooro.mvvmnewsapp.models.Source
+import com.zooro.mvvmnewsapp.data.models.Source
 
 class Converters {
 

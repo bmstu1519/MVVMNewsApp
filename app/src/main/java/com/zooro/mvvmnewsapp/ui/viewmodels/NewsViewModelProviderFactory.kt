@@ -1,9 +1,9 @@
-package com.zooro.mvvmnewsapp.viewmodels
+package com.zooro.mvvmnewsapp.ui.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.zooro.mvvmnewsapp.repository.NewsRepository
+import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 
 class NewsViewModelProviderFactory(
     val app: Application,
