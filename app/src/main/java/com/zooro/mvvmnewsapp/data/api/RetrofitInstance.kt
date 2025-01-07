@@ -1,6 +1,6 @@
-package com.zooro.mvvmnewsapp.api
+package com.zooro.mvvmnewsapp.data.api
 
-import com.zooro.mvvmnewsapp.util.Constants.Companion.BASE_URL
+import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,7 +23,7 @@ class RetrofitInstance {
         }
 
         val api by lazy{
-            retrofit.create(NewsAPI::class.java)
+            retrofit.create(NewsApiService::class.java)
         }
     }
 }

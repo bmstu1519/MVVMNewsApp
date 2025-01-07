@@ -1,12 +1,12 @@
-package com.zooro.mvvmnewsapp.api
+package com.zooro.mvvmnewsapp.data.api
 
-import com.zooro.mvvmnewsapp.models.NewsResponse
-import com.zooro.mvvmnewsapp.util.Constants.Companion.API_KEY
+import com.zooro.mvvmnewsapp.data.models.NewsResponseDto
+import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface NewsAPI {
+interface NewsApiService {
 
     @GET("v2/top-headlines")
     suspend fun getBreakingNews(
@@ -16,7 +16,7 @@ interface NewsAPI {
         pageNumber: Int = 1,
         @Query("apiKey")
         apiKey: String = API_KEY
-    ): Response<NewsResponse>
+    ): Response<NewsResponseDto>
 
     @GET("v2/everything")
     suspend fun searchForNews(
@@ -26,5 +26,5 @@ interface NewsAPI {
         pageNumber: Int = 1,
         @Query("apiKey")
         apiKey: String = API_KEY
-    ): Response<NewsResponse>
+    ): Response<NewsResponseDto>
 }
