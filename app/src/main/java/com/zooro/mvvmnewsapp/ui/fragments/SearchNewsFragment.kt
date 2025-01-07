@@ -12,13 +12,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zooro.mvvmnewsapp.R
-import com.zooro.mvvmnewsapp.adapters.NewsAdapter
+import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentSearchNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.util.Constants
-import com.zooro.mvvmnewsapp.util.Constants.Companion.SEARCH_NEWS_TIME_DELAY
-import com.zooro.mvvmnewsapp.util.Resource
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.data.api.ApiSettings
+import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.SEARCH_NEWS_TIME_DELAY
+import com.zooro.mvvmnewsapp.domain.model.Resource
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -78,7 +78,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                     hideProgressBar()
                     response.data?.let { newsResponse ->
                         newsAdapter.differ.submitList(newsResponse.articles.toList())
-                        val totalPages = newsResponse.totalResults / Constants.QUERY_PAGE_SIZE + 2
+                        val totalPages = newsResponse.totalResults / ApiSettings.QUERY_PAGE_SIZE + 2
                         isLastPage = viewModel.searchNewsPage == totalPages
                         if (isLastPage){
                             binding.rvSearchNews.setPadding(0, 0,0,0)
@@ -133,7 +133,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             val isNotLoadingAndNotLastPage =!isLoading && !isLastPage
             val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
             val isNotAtBeginning = firstVisibleItemPosition >= 0
-            val isTotalMoreThanVisible = totalItemCount >= Constants.QUERY_PAGE_SIZE
+            val isTotalMoreThanVisible = totalItemCount >= ApiSettings.QUERY_PAGE_SIZE
             //разбивать на страницы или нет
             val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
                     isTotalMoreThanVisible && isScrolling

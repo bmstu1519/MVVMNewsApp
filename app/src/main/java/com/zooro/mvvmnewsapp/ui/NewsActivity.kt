@@ -13,11 +13,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
 import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
-import com.zooro.mvvmnewsapp.db.ArticleDatabase
-import com.zooro.mvvmnewsapp.repository.NewsRepository
-import com.zooro.mvvmnewsapp.viewmodels.ArticleState
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModelProviderFactory
+import com.zooro.mvvmnewsapp.data.db.ArticleDatabase
+import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
+import com.zooro.mvvmnewsapp.ui.viewmodels.ArticleState
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelProviderFactory
 
 class NewsActivity : AppCompatActivity() {
 

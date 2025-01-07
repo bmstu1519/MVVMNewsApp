@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zooro.mvvmnewsapp.R
-import com.zooro.mvvmnewsapp.adapters.NewsAdapter
+import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.util.Constants.Companion.QUERY_PAGE_SIZE
-import com.zooro.mvvmnewsapp.util.Resource
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.QUERY_PAGE_SIZE
+import com.zooro.mvvmnewsapp.domain.model.Resource
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
