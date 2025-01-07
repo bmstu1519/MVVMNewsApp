@@ -11,13 +11,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.zooro.mvvmnewsapp.R
+import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
 import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
-import com.zooro.mvvmnewsapp.data.db.ArticleDatabase
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import com.zooro.mvvmnewsapp.ui.viewmodels.ArticleState
 import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelProviderFactory
+import com.zooro.mvvmnewsapp.ui.viewmodels.ViewModelFactory
 
 class NewsActivity : AppCompatActivity() {
 
@@ -30,16 +30,17 @@ class NewsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val newsRepository = NewsRepository(DependencyProvider)
+        val viewModelFactory = ViewModelFactory(application,newsRepository)
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(NewsViewModel::class.java)
+
         activityNewsBinding = ActivityNewsBinding.inflate(layoutInflater)
         submenuBinding = LayoutSubmenuBinding.inflate(layoutInflater)
         setContentView(activityNewsBinding.root)
         setupSubmenu()
 
         window.statusBarColor = ContextCompat.getColor(this,R.color.color_primary)
-
-        val newsRepository = NewsRepository(ArticleDatabase.invoke(this))
-        val viewModelProviderFactory = NewsViewModelProviderFactory(application,newsRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.newsHavHostFragment) as NavHostFragment
         navController = navHostFragment.findNavController()

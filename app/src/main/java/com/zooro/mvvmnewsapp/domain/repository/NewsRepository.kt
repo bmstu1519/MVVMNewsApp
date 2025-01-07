@@ -1,23 +1,22 @@
 package com.zooro.mvvmnewsapp.domain.repository
 
-import com.zooro.mvvmnewsapp.data.api.RetrofitInstance
-import com.zooro.mvvmnewsapp.data.db.ArticleDatabase
 import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.di.DependencyProvider
 
 class NewsRepository(
-    val db: ArticleDatabase
+    private val deps: DependencyProvider
 ) {
     suspend fun  getBreakingNews(countryCode: String, pageNumber: Int) =
-        RetrofitInstance.api.getBreakingNews(countryCode, pageNumber)
+        deps.retrofitClient.getBreakingNews(countryCode, pageNumber)
 
     suspend fun searchNews(searchQuery: String, pageNumber: Int) =
-        RetrofitInstance.api.searchForNews(searchQuery,pageNumber)
+        deps.retrofitClient.searchForNews(searchQuery,pageNumber)
 
-    suspend fun upsert(article: ArticleDto) = db.getArticleDao().upsert(article)
+    suspend fun upsert(article: ArticleDto) = deps.roomClient.getArticleDao().upsert(article)
 
-    suspend fun deleteArticle(article: ArticleDto) = db.getArticleDao().deleteArticle(article)
+    suspend fun deleteArticle(article: ArticleDto) = deps.roomClient.getArticleDao().deleteArticle(article)
 
-    fun getSavedNews() = db.getArticleDao().getAllArticles()
+    fun getSavedNews() = deps.roomClient.getArticleDao().getAllArticles()
 
-    suspend fun checkSavedArticle(url: String) : Int = db.getArticleDao().getArticleUrl(url)
+    suspend fun checkSavedArticle(url: String) : Int = deps.roomClient.getArticleDao().getArticleUrl(url)
 }
