@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 
-class NewsViewModelProviderFactory(
+class ViewModelFactory(
     val app: Application,
     val newsRepository: NewsRepository
 ): ViewModelProvider.Factory {
