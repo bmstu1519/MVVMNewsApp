@@ -14,10 +14,8 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
 import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
-import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import com.zooro.mvvmnewsapp.ui.viewmodels.ArticleState
 import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
-import com.zooro.mvvmnewsapp.ui.viewmodels.ViewModelFactory
 
 class NewsActivity : AppCompatActivity() {
 
@@ -30,8 +28,7 @@ class NewsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val newsRepository = NewsRepository(DependencyProvider)
-        val viewModelFactory = ViewModelFactory(application,newsRepository)
+        val viewModelFactory = DependencyProvider.viewModelFactory
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(NewsViewModel::class.java)
 

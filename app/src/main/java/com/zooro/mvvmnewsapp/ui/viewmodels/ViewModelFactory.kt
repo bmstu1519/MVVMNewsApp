@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 
 class ViewModelFactory(
-    val app: Application,
-    val newsRepository: NewsRepository
+    private val app: Application,
+    private val newsRepository: NewsRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
