@@ -1,5 +1,6 @@
 package com.zooro.mvvmnewsapp.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -10,6 +11,9 @@ import com.zooro.mvvmnewsapp.data.api.NewsApiService
 import com.zooro.mvvmnewsapp.data.db.ArticleDao
 import com.zooro.mvvmnewsapp.data.db.Converters
 import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.data.repository.NewsRepositoryImpl
+import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
+import com.zooro.mvvmnewsapp.ui.viewmodels.ViewModelFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,10 +28,17 @@ object DependencyProvider {
     }
 
     //clients
-    val retrofitClient = RetrofitProvider.newsApiService
-    val roomClient by lazy {
+    private val retrofitClient: NewsApiService = RetrofitProvider.newsApiService
+    private val roomClient: ArticleDbInterface by lazy {
         DatabaseProvider(applicationContext)
     }
+
+    //repositories
+    private val newsRepository: NewsRepository = NewsRepositoryImpl(retrofitClient, roomClient)
+
+    val viewModelFactory: ViewModelFactory = ViewModelFactory(applicationContext as Application, newsRepository)
+
+    fun getNewsRepository(): NewsRepository = newsRepository
 }
 
 private object RetrofitProvider {
