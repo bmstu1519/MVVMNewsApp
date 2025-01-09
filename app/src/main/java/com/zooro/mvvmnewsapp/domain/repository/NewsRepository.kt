@@ -1,23 +1,15 @@
 package com.zooro.mvvmnewsapp.domain.repository
 
-import com.zooro.mvvmnewsapp.data.api.RetrofitInstance
-import com.zooro.mvvmnewsapp.data.db.ArticleDatabase
+import androidx.lifecycle.LiveData
 import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.data.models.NewsResponseDto
+import retrofit2.Response
 
-class NewsRepository(
-    val db: ArticleDatabase
-) {
-    suspend fun  getBreakingNews(countryCode: String, pageNumber: Int) =
-        RetrofitInstance.api.getBreakingNews(countryCode, pageNumber)
-
-    suspend fun searchNews(searchQuery: String, pageNumber: Int) =
-        RetrofitInstance.api.searchForNews(searchQuery,pageNumber)
-
-    suspend fun upsert(article: ArticleDto) = db.getArticleDao().upsert(article)
-
-    suspend fun deleteArticle(article: ArticleDto) = db.getArticleDao().deleteArticle(article)
-
-    fun getSavedNews() = db.getArticleDao().getAllArticles()
-
-    suspend fun checkSavedArticle(url: String) : Int = db.getArticleDao().getArticleUrl(url)
+interface NewsRepository {
+    suspend fun getBreakingNews(countryCode: String, pageNumber: Int): Response<NewsResponseDto>
+    suspend fun searchNews(searchQuery: String, pageNumber: Int): Response<NewsResponseDto>
+    suspend fun upsert(article: ArticleDto): Long
+    suspend fun deleteArticle(article: ArticleDto)
+    fun getSavedNews(): LiveData<List<ArticleDto>>
+    suspend fun checkSavedArticle(url: String): Int
 }
