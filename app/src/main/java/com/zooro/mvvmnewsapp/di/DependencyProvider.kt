@@ -34,11 +34,15 @@ object DependencyProvider {
     }
 
     //repositories
-    private val newsRepository: NewsRepository = NewsRepositoryImpl(retrofitClient, roomClient)
+    private val newsRepository: NewsRepository by lazy {
+        NewsRepositoryImpl(retrofitClient, roomClient)
+    }
 
-    val viewModelFactory: ViewModelFactory = ViewModelFactory(applicationContext as Application, newsRepository)
+    val viewModelFactory: ViewModelFactory by lazy {
+        ViewModelFactory(applicationContext as Application, newsRepository)
+    }
 
-    fun getNewsRepository(): NewsRepository = newsRepository
+    fun provideNewsRepository(): NewsRepository = newsRepository
 }
 
 private object RetrofitProvider {
