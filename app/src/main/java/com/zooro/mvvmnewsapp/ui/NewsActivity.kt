@@ -11,35 +11,38 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.zooro.mvvmnewsapp.R
-import com.zooro.mvvmnewsapp.db.ArticleDatabase
-import com.zooro.mvvmnewsapp.repository.NewsRepository
-import com.zooro.mvvmnewsapp.viewmodels.ArticleState
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModel
-import com.zooro.mvvmnewsapp.viewmodels.NewsViewModelProviderFactory
-import kotlinx.android.synthetic.main.activity_news.*
-import kotlinx.android.synthetic.main.layout_submenu.*
+import com.zooro.mvvmnewsapp.di.DependencyProvider
+import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
+import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
+import com.zooro.mvvmnewsapp.ui.viewmodels.ArticleState
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 
 class NewsActivity : AppCompatActivity() {
 
     lateinit var viewModel: NewsViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
+    private lateinit var activityNewsBinding: ActivityNewsBinding
+    private lateinit var submenuBinding: LayoutSubmenuBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_news)
+        val viewModelFactory = DependencyProvider.viewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(NewsViewModel::class.java)
+
+        activityNewsBinding = ActivityNewsBinding.inflate(layoutInflater)
+        submenuBinding = LayoutSubmenuBinding.inflate(layoutInflater)
+        setContentView(activityNewsBinding.root)
         setupSubmenu()
 
         window.statusBarColor = ContextCompat.getColor(this,R.color.color_primary)
 
-        val newsRepository = NewsRepository(ArticleDatabase.invoke(this))
-        val viewModelProviderFactory = NewsViewModelProviderFactory(application,newsRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory).get(NewsViewModel::class.java)
-
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.newsHavHostFragment) as NavHostFragment
         navController = navHostFragment.findNavController()
 
-        bottomNavigationView.setupWithNavController(navController)
+        activityNewsBinding.bottomNavigationView.setupWithNavController(navController)
         setupToolbar(navController)
 
         viewModel.state
@@ -50,26 +53,26 @@ class NewsActivity : AppCompatActivity() {
     }
 
     private fun setupSubmenu(){
-        switch_mode.setOnClickListener { viewModel.handleNightMode() }
-        btn_settings.setOnClickListener { viewModel.handleToggleMenu() }
+        submenuBinding.switchMode.setOnClickListener { viewModel.handleNightMode() }
+        activityNewsBinding.btnSettings.setOnClickListener { viewModel.handleToggleMenu() }
 
     }
 
     private fun setupToolbar(navController: NavController){
-        setSupportActionBar(toolbar)
+        setSupportActionBar(activityNewsBinding.toolbar)
         appBarConfiguration = AppBarConfiguration(setOf(
             R.id.breakingNewsFragment,
             R.id.searchNewsFragment,
             R.id.savedNewsFragment
         ))
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+        activityNewsBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun renderUi(data: ArticleState) {
-        btn_settings.isChecked = data.isShowMenu
-        if (data.isShowMenu) submenu.open() else submenu.close()
+        activityNewsBinding.btnSettings.isChecked = data.isShowMenu
+        if (data.isShowMenu) activityNewsBinding.submenu.open() else activityNewsBinding.submenu.close()
 
-        switch_mode.isChecked = data.isDarkMode
+        submenuBinding.switchMode.isChecked = data.isDarkMode
         delegate.localNightMode =
             if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
             else AppCompatDelegate.MODE_NIGHT_NO
