@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.ItemArticlePreviewBinding
-import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.data.db.ArticleDto
 
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
@@ -45,7 +45,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
                 ivArticleImage.setImageResource(R.drawable.no_content)
             }
 
-            tvSource.text = article.source?.name
+            tvSource.text = article.newsSource?.name
             tvTitle.text = article.title
             tvDescription.text = article.description
             tvPublishedAt.text = article.publishedAt

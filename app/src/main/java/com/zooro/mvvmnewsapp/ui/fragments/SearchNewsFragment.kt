@@ -15,8 +15,8 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentSearchNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.data.api.ApiSettings
-import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.SEARCH_NEWS_TIME_DELAY
+import com.zooro.mvvmnewsapp.data.network.ApiSettings
+import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.SEARCH_NEWS_TIME_DELAY
 import com.zooro.mvvmnewsapp.domain.model.Resource
 import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 import kotlinx.coroutines.Job

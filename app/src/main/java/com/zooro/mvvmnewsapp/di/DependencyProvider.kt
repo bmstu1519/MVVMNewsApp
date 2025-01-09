@@ -6,11 +6,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.BASE_URL
-import com.zooro.mvvmnewsapp.data.api.NewsApiService
+import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.BASE_URL
+import com.zooro.mvvmnewsapp.data.network.NewsApiService
 import com.zooro.mvvmnewsapp.data.db.ArticleDao
 import com.zooro.mvvmnewsapp.data.db.Converters
-import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.data.db.ArticleDto
 import com.zooro.mvvmnewsapp.data.repository.NewsRepositoryImpl
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import com.zooro.mvvmnewsapp.ui.viewmodels.ViewModelFactory

@@ -15,7 +15,7 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.QUERY_PAGE_SIZE
+import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.QUERY_PAGE_SIZE
 import com.zooro.mvvmnewsapp.domain.model.Resource
 import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
 

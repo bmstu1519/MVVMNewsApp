@@ -34,6 +34,6 @@
         android:label="News">
         <argument
             android:name="article"
-            app:argType="com.zooro.mvvmnewsapp.data.models.ArticleDto" />
+            app:argType="com.zooro.mvvmnewsapp.data.db.ArticleDto" />
     </fragment>
 </navigation>
