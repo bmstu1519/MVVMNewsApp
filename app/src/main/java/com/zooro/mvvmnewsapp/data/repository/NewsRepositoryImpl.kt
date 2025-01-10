@@ -1,12 +1,11 @@
 package com.zooro.mvvmnewsapp.data.repository
 
-import androidx.lifecycle.LiveData
-import com.zooro.mvvmnewsapp.data.network.NewsApiService
 import com.zooro.mvvmnewsapp.data.db.ArticleDto
+import com.zooro.mvvmnewsapp.data.network.NewsApiService
 import com.zooro.mvvmnewsapp.data.network.NewsResponseDto
 import com.zooro.mvvmnewsapp.di.ArticleDbInterface
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
 
 class NewsRepositoryImpl(
     private val api: NewsApiService,
@@ -16,21 +15,42 @@ class NewsRepositoryImpl(
     override suspend fun getBreakingNews(
         countryCode: String,
         pageNumber: Int
-    ): Response<NewsResponseDto> =
-        api.getBreakingNews(countryCode, pageNumber)
+    ): Result<NewsResponseDto> = runCatching { api.getBreakingNews(countryCode, pageNumber) }
+        .fold(
+            onSuccess = { response ->
+                if (response.isSuccessful) {
+                    Result.success(response.body() ?: throw Exception("Response body is null"))
+                } else {
+                    Result.failure(Exception("Error: ${response.code()} ${response.message()}"))
+                }
+            },
+            onFailure = {
+                Result.failure(it)
+            }
+        )
 
     override suspend fun searchNews(
         searchQuery: String,
         pageNumber: Int
-    ): Response<NewsResponseDto> =
-        api.searchForNews(searchQuery, pageNumber)
+    ): Result<NewsResponseDto> = runCatching { api.searchForNews(searchQuery, pageNumber) }
+            .fold(
+                onSuccess = { response ->
+                    if (response.isSuccessful) {
+                        Result.success(response.body() ?: throw Exception("Response body is null"))
+                    } else {
+                        Result.failure(Exception("Error: ${response.code()} ${response.message()}"))
+                    }
+                },
+                onFailure = {
+                    Result.failure(it)
+                }
+            )
 
-    override suspend fun upsert(article: ArticleDto): Long = db.getArticleDao().upsert(article)
+    override suspend fun saveArticle(article: ArticleDto): Long = db.getArticleDao().saveArticle(article)
 
-    override suspend fun deleteArticle(article: ArticleDto) =
-        db.getArticleDao().deleteArticle(article)
+    override suspend fun deleteArticle(article: ArticleDto) = db.getArticleDao().deleteArticle(article)
 
-    override fun getSavedNews(): LiveData<List<ArticleDto>> = db.getArticleDao().getAllArticles()
+    override fun getSavedNews(): Flow<List<ArticleDto>> = db.getArticleDao().getAllArticles()
 
-    override suspend fun checkSavedArticle(url: String): Int = db.getArticleDao().getArticleUrl(url)
+    override suspend fun isArticleSaved(url: String): Int = db.getArticleDao().getArticleUrl(url)
 }

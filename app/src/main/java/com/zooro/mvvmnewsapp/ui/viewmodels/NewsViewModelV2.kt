@@ -7,7 +7,7 @@ import com.zooro.mvvmnewsapp.data.toNetwork
 import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.model.NewsResponse
 import com.zooro.mvvmnewsapp.domain.model.Resource
-import com.zooro.mvvmnewsapp.domain.repository.NetworkHelper
+import com.zooro.mvvmnewsapp.domain.repository.NetworkHelperRepository
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +29,7 @@ sealed class NewsState {
 
 class NewsViewModelV2(
     private val newsRepository: NewsRepository,
-    private val networkHelper: NetworkHelper
+    private val networkHelper: NetworkHelperRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<NewsState>(NewsState.Initial)
