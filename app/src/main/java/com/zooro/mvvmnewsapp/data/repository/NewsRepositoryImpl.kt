@@ -33,22 +33,24 @@ class NewsRepositoryImpl(
         searchQuery: String,
         pageNumber: Int
     ): Result<NewsResponseDto> = runCatching { api.searchForNews(searchQuery, pageNumber) }
-            .fold(
-                onSuccess = { response ->
-                    if (response.isSuccessful) {
-                        Result.success(response.body() ?: throw Exception("Response body is null"))
-                    } else {
-                        Result.failure(Exception("Error: ${response.code()} ${response.message()}"))
-                    }
-                },
-                onFailure = {
-                    Result.failure(it)
+        .fold(
+            onSuccess = { response ->
+                if (response.isSuccessful) {
+                    Result.success(response.body() ?: throw Exception("Response body is null"))
+                } else {
+                    Result.failure(Exception("Error: ${response.code()} ${response.message()}"))
                 }
-            )
+            },
+            onFailure = {
+                Result.failure(it)
+            }
+        )
 
-    override suspend fun saveArticle(article: ArticleDto): Long = db.getArticleDao().saveArticle(article)
+    override suspend fun saveArticle(article: ArticleDto): Long =
+        db.getArticleDao().saveArticle(article)
 
-    override suspend fun deleteArticle(article: ArticleDto) = db.getArticleDao().deleteArticle(article)
+    override suspend fun deleteArticle(article: ArticleDto) =
+        db.getArticleDao().deleteArticle(article)
 
     override fun getSavedNews(): Flow<List<ArticleDto>> = db.getArticleDao().getAllArticles()
 
