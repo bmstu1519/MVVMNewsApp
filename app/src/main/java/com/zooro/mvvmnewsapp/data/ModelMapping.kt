@@ -32,13 +32,13 @@ fun ArticleDto.toDomain() = Article(
 )
 
 fun NewsResponse.toNetwork() = NewsResponseDto(
-    articles = articles,
+    articles = articles.toNetwork(),
     status = status,
     totalResults = totalResults,
 )
 
 fun NewsResponseDto.toDomain() = NewsResponse(
-    articles = articles,
+    articles = articles.toDomain(),
     status = status,
     totalResults = totalResults,
 )
