@@ -6,7 +6,7 @@ import com.zooro.mvvmnewsapp.data.toDomain
 import com.zooro.mvvmnewsapp.data.toNetwork
 import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.model.NewsResponse
-import com.zooro.mvvmnewsapp.domain.model.Resource
+import com.zooro.mvvmnewsapp.domain.model.PaginationState
 import com.zooro.mvvmnewsapp.domain.repository.NetworkHelperRepository
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,95 +17,149 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-sealed class NewsState {
-    data object Initial : NewsState()
-    data object Loading : NewsState()
-    data class Content(
-        val isShowMenu: Boolean = false,
-        val isDarkMode: Boolean = false
-    ) : NewsState()
-    data class Error(val message: String) : NewsState()
-}
+data class NewsUiState(
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val isShowMenu: Boolean = false,
+    val isDarkMode: Boolean = false,
+    val breakingNews: NewsResponse? = null,
+    val searchNews: NewsResponse? = null,
+    val paginationState: PaginationState? = null
+)
 
 class NewsViewModelV2(
     private val newsRepository: NewsRepository,
     private val networkHelper: NetworkHelperRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<NewsState>(NewsState.Initial)
-    val state: StateFlow<NewsState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(NewsUiState())
+    val state: StateFlow<NewsUiState> = _state.asStateFlow()
 
-    private val _breakingNews = MutableStateFlow<Resource<NewsResponse>>(Resource.Loading())
-    val breakingNews: StateFlow<Resource<NewsResponse>> = _breakingNews.asStateFlow()
+    private val searchQuery = MutableStateFlow("")
 
-    private val _searchNews = MutableStateFlow<Resource<NewsResponse>>(Resource.Loading())
-    val searchNews: StateFlow<Resource<NewsResponse>> = _searchNews.asStateFlow()
-
-    var breakingNewsPage = 1
-    var searchNewsPage = 1
+    companion object {
+        private const val STARTING_PAGE = 1
+        private const val PAGE_SIZE = 20
+    }
 
     init {
         getBreakingNews("us")
     }
 
     fun handleToggleMenu() {
-        _state.update { currentState ->
-            when (currentState) {
-                is NewsState.Content -> currentState.copy(isShowMenu = !currentState.isShowMenu)
-                else -> NewsState.Content(isShowMenu = true)
-            }
-        }
+        updateState(isShowMenu = !_state.value.isShowMenu)
     }
 
     fun handleNightMode() {
-        _state.update { currentState ->
-            when (currentState) {
-                is NewsState.Content -> currentState.copy(isDarkMode = !currentState.isDarkMode)
-                else -> NewsState.Content(isDarkMode = true)
+        updateState(isDarkMode = !_state.value.isDarkMode)
+    }
+
+    fun getBreakingNews(countryCode: String, isFirstLoad: Boolean = false) = viewModelScope.launch {
+        if (isFirstLoad) {
+            resetPaginationState()
+        }
+        loadNextPage(
+            loadPage = { page ->
+                newsRepository.getBreakingNews(countryCode, page).map {
+                    it.toDomain()
+                }
             }
+        )
+    }
+
+    fun searchNews() = viewModelScope.launch {
+        loadNextPage(
+            loadPage = { page ->
+                newsRepository.searchNews(searchQuery.value, page).map {
+                    it.toDomain()
+                }
+            }
+        )
+    }
+
+//    fun updateSearchQuery(query: String) {
+//        if (query.length >= 3) {
+//            searchQuery.value = query
+//            searchNews()
+//        }
+//    }
+
+    private fun resetPaginationState() {
+        updateState(
+            paginationState = PaginationState(
+                currentPage = STARTING_PAGE,
+                items = emptyList()
+            )
+        )
+    }
+
+    private fun shouldSkipLoading(currentState: PaginationState?): Boolean {
+        return currentState?.isLastPage == true || currentState?.isLoading == true
+    }
+
+    private suspend fun loadNextPage(
+        loadPage: suspend (Int) -> Result<NewsResponse>
+    ) {
+        val currentState = _state.value.paginationState
+
+        if (shouldSkipLoading(currentState)) return
+
+        updateState(
+            paginationState = currentState?.copy(isLoading = true)
+        )
+
+        try {
+            if (!networkHelper.isNetworkConnected()) {
+                handleError("No internet connection", currentState)
+                return
+            }
+
+            loadPage(currentState?.currentPage ?: STARTING_PAGE)
+                .onSuccess { response ->
+                    handleSuccessResponse(response, currentState)
+                }
+                .onFailure { exception ->
+                    handleError(
+                        exception.message ?: "Unknown error",
+                        currentState
+                    )
+                }
+        } catch (e: Exception) {
+            handleError(
+                e.localizedMessage ?: "Unknown error",
+                currentState
+            )
         }
     }
 
-    fun getBreakingNews(countryCode: String) = viewModelScope.launch {
-        _breakingNews.value = Resource.Loading()
+    private fun handleSuccessResponse(
+        response: NewsResponse,
+        currentState: PaginationState?
+    ) {
+        val newArticles = response.articles
+        val currentItems = currentState?.items.orEmpty()
+        val isFirstPage = currentState?.currentPage == STARTING_PAGE
+        val updatedItems = if (isFirstPage) newArticles else currentItems + newArticles
 
-        try {
-            if (networkHelper.isNetworkConnected()) {
-                newsRepository.getBreakingNews(countryCode, breakingNewsPage)
-                    .onSuccess { newsResponseDto ->
-                        breakingNewsPage++
-                        _breakingNews.value = Resource.Success(newsResponseDto.toDomain())
-                    }
-                    .onFailure { exception ->
-                        _breakingNews.value = Resource.Error(exception.message ?: "Unknown error")
-                    }
-            } else {
-                _breakingNews.value = Resource.Error("No internet connection")
-            }
-        } catch (e: Exception) {
-            _breakingNews.value = Resource.Error(e.localizedMessage ?: "Unknown error")
-        }
+        updateState(
+            paginationState = PaginationState(
+                isLoading = false,
+                isLastPage = newArticles.isEmpty() || newArticles.size < PAGE_SIZE,
+                currentPage = (currentState?.currentPage ?: STARTING_PAGE) + 1,
+                items = updatedItems
+            ),
+            errorMessage = null
+        )
     }
 
-    fun searchNews(searchQuery: String) = viewModelScope.launch {
-        _searchNews.value = Resource.Loading()
-
-        try {
-            if (networkHelper.isNetworkConnected()) {
-                newsRepository.searchNews(searchQuery, searchNewsPage)
-                    .onSuccess { newsResponseDto ->
-                        searchNewsPage++
-                        _searchNews.value = Resource.Success(newsResponseDto.toDomain())
-                    }
-                    .onFailure { exception ->
-                        _searchNews.value = Resource.Error(exception.message ?: "Unknown error")
-                    }
-            } else {
-                _searchNews.value = Resource.Error("No internet connection")
-            }
-        } catch (e: Exception) {
-            _searchNews.value = Resource.Error(e.localizedMessage ?: "Unknown error")
-        }
+    private fun handleError(
+        errorMessage: String,
+        currentState: PaginationState?
+    ) {
+        updateState(
+            paginationState = currentState?.copy(isLoading = false),
+            errorMessage = errorMessage
+        )
     }
 
     fun saveArticle(article: Article) = viewModelScope.launch {
@@ -120,5 +174,27 @@ class NewsViewModelV2(
 
     fun deleteArticle(article: Article) = viewModelScope.launch {
         newsRepository.deleteArticle(article.toNetwork())
+    }
+
+    private fun updateState(
+        isLoading: Boolean? = null,
+        errorMessage: String? = null,
+        isShowMenu: Boolean? = null,
+        isDarkMode: Boolean? = null,
+        breakingNews: NewsResponse? = null,
+        searchNews: NewsResponse? = null,
+        paginationState: PaginationState? = null
+    ) {
+        _state.update { currentState ->
+            currentState.copy(
+                isLoading = isLoading ?: currentState.isLoading,
+                errorMessage = errorMessage ?: currentState.errorMessage,
+                isShowMenu = isShowMenu ?: currentState.isShowMenu,
+                isDarkMode = isDarkMode ?: currentState.isDarkMode,
+                breakingNews = breakingNews ?: currentState.breakingNews,
+                searchNews = searchNews ?: currentState.searchNews,
+                paginationState = paginationState ?: currentState.paginationState
+            )
+        }
     }
 }
