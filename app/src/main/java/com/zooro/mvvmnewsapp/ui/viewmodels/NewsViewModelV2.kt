@@ -67,22 +67,26 @@ class NewsViewModelV2(
         )
     }
 
-    fun searchNews() = viewModelScope.launch {
-        loadNextPage(
-            loadPage = { page ->
-                newsRepository.searchNews(searchQuery.value, page).map {
-                    it.toDomain()
+    fun searchNews(isFirstLoad: Boolean = false) = viewModelScope.launch {
+        if (isFirstLoad) {
+            resetPaginationState()
+        } else {
+            loadNextPage(
+                loadPage = { page ->
+                    newsRepository.searchNews(searchQuery.value, page).map {
+                        it.toDomain()
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 
-//    fun updateSearchQuery(query: String) {
-//        if (query.length >= 3) {
-//            searchQuery.value = query
-//            searchNews()
-//        }
-//    }
+    fun updateSearchQuery(query: String) {
+        if (query.length >= 3) {
+            searchQuery.value = query
+            searchNews()
+        }
+    }
 
     private fun resetPaginationState() {
         updateState(
