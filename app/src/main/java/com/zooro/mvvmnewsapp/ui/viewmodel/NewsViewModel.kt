@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.ui.viewmodels
+package com.zooro.mvvmnewsapp.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +27,7 @@ data class NewsUiState(
     val isArticleSaved: Boolean? = null
 )
 
-class NewsViewModelV2(
+class NewsViewModel(
     private val newsRepository: NewsRepository,
     private val networkHelper: NetworkHelperRepository
 ) : ViewModel() {

@@ -17,12 +17,12 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSavedNewsBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelV2
+import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 
 class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 
-    lateinit var viewModel: NewsViewModelV2
+    lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapter
     lateinit var binding: FragmentSavedNewsBinding
 

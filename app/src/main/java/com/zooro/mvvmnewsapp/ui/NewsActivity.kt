@@ -2,7 +2,6 @@ package com.zooro.mvvmnewsapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -14,11 +13,11 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
 import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelV2
+import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
 
 class NewsActivity : AppCompatActivity() {
 
-    lateinit var viewModel: NewsViewModelV2
+    lateinit var viewModel: NewsViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private lateinit var activityNewsBinding: ActivityNewsBinding
@@ -28,7 +27,7 @@ class NewsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val viewModelFactory = DependencyProvider.viewModelFactory
         viewModel = ViewModelProvider(this, viewModelFactory)
-            .get(NewsViewModelV2::class.java)
+            .get(NewsViewModel::class.java)
 
         activityNewsBinding = ActivityNewsBinding.inflate(layoutInflater)
         submenuBinding = LayoutSubmenuBinding.inflate(layoutInflater)

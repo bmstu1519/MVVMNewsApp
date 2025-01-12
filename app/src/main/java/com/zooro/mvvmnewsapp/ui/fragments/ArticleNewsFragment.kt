@@ -14,12 +14,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentArticleBinding
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelV2
+import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 
 class ArticleNewsFragment : Fragment(R.layout.fragment_article) {
 
-    lateinit var viewModel: NewsViewModelV2
+    lateinit var viewModel: NewsViewModel
     private val args: ArticleNewsFragmentArgs by navArgs()
     private lateinit var binding: FragmentArticleBinding
 
