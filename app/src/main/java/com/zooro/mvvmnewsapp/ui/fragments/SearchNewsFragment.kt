@@ -4,33 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zooro.mvvmnewsapp.R
-import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.databinding.FragmentSearchNewsBinding
+import com.zooro.mvvmnewsapp.domain.model.PaginationState
 import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.data.network.ApiSettings
-import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.SEARCH_NEWS_TIME_DELAY
-import com.zooro.mvvmnewsapp.domain.model.Resource
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
+import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
+import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelV2
 import kotlinx.coroutines.launch
 
 class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
-    private lateinit var viewModel: NewsViewModel
+    private lateinit var viewModel: NewsViewModelV2
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var searchQuery: String
-    //private val TAG = "SearchNewsFragment"
-
     private lateinit var binding: FragmentSearchNewsBinding
 
     override fun onCreateView(
@@ -46,105 +42,84 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as NewsActivity).viewModel
         setupRecyclerView()
+        setupPagination()
+        setupClickListeners()
+        setupSearchListener()
+        observeUiState()
 
-        newsAdapter.setOnItemClickListener {
+        viewModel.searchNews(true)
+    }
+
+    private fun setupClickListeners() {
+        newsAdapter.setOnItemClickListener { article ->
             val bundle = Bundle().apply {
-                putSerializable("article", it)
+                putParcelable("article", article)
             }
             findNavController().navigate(
                 R.id.action_searchNewsFragment_to_articleNewsFragment,
                 bundle
             )
         }
+    }
 
-        var job: Job? = null
+    private fun setupSearchListener() {
         binding.etSearch.addTextChangedListener { editable ->
-            job?.cancel()
-            job = MainScope().launch {
-                delay(SEARCH_NEWS_TIME_DELAY)
-                    editable?.let {
-                        if (editable.toString().length > 2) {
-                            searchQuery = editable.toString()
-                            viewModel.searchNewsPage = 1
-                            viewModel.searchNews(searchQuery)
-                        }
-                    }
+            viewModel.updateSearchQuery(editable?.toString() ?: "")
+        }
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { uiState ->
+                    handleError(uiState.errorMessage)
+                    handlePagination(uiState.paginationState)
+                }
             }
         }
+    }
 
-        viewModel.searchNews.observe(viewLifecycleOwner, { response ->
-            when (response) {
-                is Resource.Success -> {
-                    hideProgressBar()
-                    response.data?.let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.articles.toList())
-                        val totalPages = newsResponse.totalResults / ApiSettings.QUERY_PAGE_SIZE + 2
-                        isLastPage = viewModel.searchNewsPage == totalPages
-                        if (isLastPage){
-                            binding.rvSearchNews.setPadding(0, 0,0,0)
-                        }
+    private fun handlePagination(paginationState: PaginationState?) {
+        paginationState?.let { state ->
+            newsAdapter.differ.submitList(state.items)
+
+            binding.paginationProgressBar.isVisible = state.isLoading
+
+            if (state.isLastPage) {
+                binding.rvSearchNews.setPadding(0, 0, 0, 0)
+            }
+        }
+    }
+
+    private fun handleError(errorMessage: String?) {
+        errorMessage?.let {
+            Toast.makeText(
+                activity,
+                "You have requested too many results.\n" +
+                        "Developer accounts are limited to a max of 100 results.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun setupPagination() {
+        binding.rvSearchNews.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                    val shouldLoadMore = visibleItemCount + firstVisibleItemPosition >= totalItemCount - 5
+                    if (shouldLoadMore) {
+                        viewModel.searchNews()
                     }
-                }
-                is Resource.Error -> {
-                    hideProgressBar()
-                    response.message?.run {
-                        Toast.makeText(activity, "You have requested too many results.\nDeveloper accounts are limited to a max of 100 results.", Toast.LENGTH_LONG).show()
-                    }
-                }
-                is Resource.Loading -> {
-                    showProgressBar()
                 }
             }
         })
-    }
-
-    private fun hideProgressBar() {
-        binding.paginationProgressBar.visibility = View.INVISIBLE
-        isLoading = false
-    }
-
-    private fun showProgressBar() {
-        binding.paginationProgressBar.visibility = View.VISIBLE
-        isLoading = true
-    }
-
-    var isLoading = false
-    var isLastPage = false
-    var isScrolling = false
-
-    val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                isScrolling = true
-            }
-        }
-
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-
-            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-            //первый видимый элемент
-            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-            //общее количество видимых элементов
-            val visibleItemCount = layoutManager.childCount
-            //общее количество элементов
-            val totalItemCount = layoutManager.itemCount
-
-            val isNotLoadingAndNotLastPage =!isLoading && !isLastPage
-            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
-            val isNotAtBeginning = firstVisibleItemPosition >= 0
-            val isTotalMoreThanVisible = totalItemCount >= ApiSettings.QUERY_PAGE_SIZE
-            //разбивать на страницы или нет
-            val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                    isTotalMoreThanVisible && isScrolling
-
-            if (shouldPaginate){
-                viewModel.searchNews(searchQuery)
-                isScrolling = false
-            }
-
-
-        }
     }
 
     private fun setupRecyclerView() {
@@ -152,7 +127,6 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         binding.rvSearchNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
-            addOnScrollListener(this@SearchNewsFragment.scrollListener)
         }
     }
 }
