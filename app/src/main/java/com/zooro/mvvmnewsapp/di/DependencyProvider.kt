@@ -1,19 +1,20 @@
 package com.zooro.mvvmnewsapp.di
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.zooro.mvvmnewsapp.data.db.ArticleDao
+import com.zooro.mvvmnewsapp.data.db.ArticleDto
+import com.zooro.mvvmnewsapp.data.db.Converters
 import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.BASE_URL
 import com.zooro.mvvmnewsapp.data.network.NewsApiService
-import com.zooro.mvvmnewsapp.data.db.ArticleDao
-import com.zooro.mvvmnewsapp.data.db.Converters
-import com.zooro.mvvmnewsapp.data.db.ArticleDto
+import com.zooro.mvvmnewsapp.data.repository.NetworkHelperRepositoryImpl
 import com.zooro.mvvmnewsapp.data.repository.NewsRepositoryImpl
+import com.zooro.mvvmnewsapp.domain.repository.NetworkHelperRepository
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
-import com.zooro.mvvmnewsapp.ui.viewmodels.ViewModelFactory
+import com.zooro.mvvmnewsapp.ui.viewmodel.ViewModelFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -37,12 +38,14 @@ object DependencyProvider {
     private val newsRepository: NewsRepository by lazy {
         NewsRepositoryImpl(retrofitClient, roomClient)
     }
-
-    val viewModelFactory: ViewModelFactory by lazy {
-        ViewModelFactory(applicationContext as Application, newsRepository)
+    private val networkHelper: NetworkHelperRepository by lazy {
+        NetworkHelperRepositoryImpl(applicationContext)
     }
 
-    fun provideNewsRepository(): NewsRepository = newsRepository
+    val viewModelFactory: ViewModelFactory by lazy {
+        ViewModelFactory(newsRepository, networkHelper)
+    }
+
 }
 
 private object RetrofitProvider {

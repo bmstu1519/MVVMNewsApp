@@ -18,11 +18,11 @@ import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
 import com.zooro.mvvmnewsapp.domain.model.PaginationState
 import com.zooro.mvvmnewsapp.ui.NewsActivity
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModelV2
+import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
 import kotlinx.coroutines.launch
 
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
-    private lateinit var viewModel: NewsViewModelV2
+    private lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var binding: FragmentBreakingNewsBinding
 
