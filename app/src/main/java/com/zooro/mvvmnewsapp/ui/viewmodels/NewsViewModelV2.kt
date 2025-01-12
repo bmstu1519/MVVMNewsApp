@@ -23,8 +23,8 @@ data class NewsUiState(
     val isShowMenu: Boolean = false,
     val isDarkMode: Boolean = false,
     val breakingNews: NewsResponse? = null,
-    val searchNews: NewsResponse? = null,
-    val paginationState: PaginationState? = null
+    val paginationState: PaginationState? = null,
+    val isArticleSaved: Boolean? = null
 )
 
 class NewsViewModelV2(
@@ -166,15 +166,31 @@ class NewsViewModelV2(
         )
     }
 
-    fun saveArticle(article: Article) = viewModelScope.launch {
-        newsRepository.saveArticle(article.toNetwork())
-    }
-
     fun getSavedNews(): Flow<List<Article>> = newsRepository.getSavedNews().map { article ->
         article.toDomain()
     }
 
-    suspend fun isArticleSaved(url: String): Boolean = newsRepository.isArticleSaved(url) > 0
+    fun checkArticleSaved(article: Article) = viewModelScope.launch {
+        val isSaved = article.url?.let { url ->
+            isArticleSaved(url)
+        }
+        when(isSaved){
+            true -> updateState(isArticleSaved = isSaved)
+            false -> {
+                saveArticle(article)
+                updateState(isArticleSaved = isSaved)
+            }
+            null -> {
+                /*nothing to do */
+            }
+        }
+    }
+
+    fun saveArticle(article: Article) = viewModelScope.launch {
+        newsRepository.saveArticle(article.toNetwork())
+    }
+
+    private suspend fun isArticleSaved(url: String): Boolean = newsRepository.isArticleSaved(url) > 0
 
     fun deleteArticle(article: Article) = viewModelScope.launch {
         newsRepository.deleteArticle(article.toNetwork())
@@ -186,8 +202,8 @@ class NewsViewModelV2(
         isShowMenu: Boolean? = null,
         isDarkMode: Boolean? = null,
         breakingNews: NewsResponse? = null,
-        searchNews: NewsResponse? = null,
-        paginationState: PaginationState? = null
+        paginationState: PaginationState? = null,
+        isArticleSaved: Boolean? = null
     ) {
         _state.update { currentState ->
             currentState.copy(
@@ -196,8 +212,8 @@ class NewsViewModelV2(
                 isShowMenu = isShowMenu ?: currentState.isShowMenu,
                 isDarkMode = isDarkMode ?: currentState.isDarkMode,
                 breakingNews = breakingNews ?: currentState.breakingNews,
-                searchNews = searchNews ?: currentState.searchNews,
-                paginationState = paginationState ?: currentState.paginationState
+                paginationState = paginationState ?: currentState.paginationState,
+                isArticleSaved = isArticleSaved
             )
         }
     }
