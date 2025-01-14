@@ -1,7 +1,7 @@
 package com.zooro.mvvmnewsapp.domain.usecase
 
 import com.zooro.mvvmnewsapp.domain.model.Article
-import com.zooro.mvvmnewsapp.domain.repository.ArticleUseCaseRepository
+import com.zooro.mvvmnewsapp.domain.repository.DatabaseArticleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,13 +17,13 @@ data class SavedNewsState(
 )
 
 class GetSavedNewsUseCase(
-    private val articleUseCaseRepository: ArticleUseCaseRepository
+    private val articleRepository: DatabaseArticleRepository
 ) {
     private val _state = MutableStateFlow(SavedNewsState())
     val state = _state.asStateFlow()
 
     operator fun invoke(): Flow<List<Article>> =
-        articleUseCaseRepository.getSavedArticles()
+        articleRepository.getSavedArticles()
         .onStart {
             updateState(isLoading = true)
         }
