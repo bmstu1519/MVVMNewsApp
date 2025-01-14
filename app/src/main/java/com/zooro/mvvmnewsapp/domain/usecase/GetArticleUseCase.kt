@@ -1,60 +1,52 @@
 package com.zooro.mvvmnewsapp.domain.usecase
 
-import androidx.lifecycle.viewModelScope
-import com.zooro.mvvmnewsapp.data.toDomain
-import com.zooro.mvvmnewsapp.data.toNetwork
 import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.repository.ArticleUseCaseRepository
-import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 
 data class ArticleState(
     val isArticleSaved: Boolean? = null
 )
 
 class GetArticleUseCase(
-    private val newsRepository: NewsRepository,
-): ArticleUseCaseRepository {
+    private val articleUseCaseRepository: ArticleUseCaseRepository
+){
+    private val _state = MutableStateFlow(ArticleState())
+    val state = _state.asStateFlow()
 
     operator fun invoke(
         article: Article
-    ): Flow<ArticleState> {
-
-    }
-
-    fun checkArticleSaved(article: Article) = viewModelScope.launch {
-        val isSaved = article.url?.let { url ->
-            isArticleSaved(url)
-        }
-        when(isSaved){
-            true -> updateState(isArticleSaved = isSaved)
-            false -> {
-                saveArticle(article)
-                updateState(isArticleSaved = isSaved)
+    ): Flow<ArticleState> = flow {
+        try {
+            val isSaved = article.url?.let { url ->
+                articleUseCaseRepository.isArticleSaved(url)
             }
-            null -> {
-                /*nothing to do */
+            when(isSaved){
+                true -> updateState(isArticleSaved = isSaved)
+                false -> {
+                    articleUseCaseRepository.saveArticle(article)
+                    updateState(isArticleSaved = isSaved)
+                }
+                null -> {
+                    /*nothing to do */
+                }
             }
+        } catch (e: Exception) {
+
         }
     }
 
-    override suspend fun saveArticle(article: Article) {
-        newsRepository.saveArticle(article.toNetwork())
-    }
-
-    override suspend fun deleteArticle(article: Article) {
-        newsRepository.deleteArticle(article.toNetwork())
-    }
-
-    override suspend fun isArticleSaved(url: String): Boolean {
-        return newsRepository.isArticleSaved(url) > 0
-    }
-
-    override suspend fun getSavedArticles(): Flow<List<Article>> {
-        return newsRepository.getSavedNews().map { articles ->
-            articles.map { it.toDomain() }
+    private fun updateState(
+        isArticleSaved: Boolean? = null
+    ) {
+        _state.update { currentState ->
+            currentState.copy(
+                isArticleSaved = isArticleSaved ?: currentState.isArticleSaved
+            )
         }
     }
 }
