@@ -1,16 +1,18 @@
 package com.zooro.mvvmnewsapp.data.repository
 
+import android.util.Log
 import com.zooro.mvvmnewsapp.data.toDomain
 import com.zooro.mvvmnewsapp.data.toNetwork
 import com.zooro.mvvmnewsapp.domain.model.Article
-import com.zooro.mvvmnewsapp.domain.repository.ArticleUseCaseRepository
+import com.zooro.mvvmnewsapp.domain.repository.DatabaseArticleRepository
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
-class ArticleUseCaseRepositoryImpl(
+class DatabaseArticleRepositoryImpl(
     private val newsRepository: NewsRepository,
-): ArticleUseCaseRepository {
+) : DatabaseArticleRepository {
 
     override suspend fun saveArticle(article: Article) {
         newsRepository.saveArticle(article.toNetwork())
@@ -24,9 +26,11 @@ class ArticleUseCaseRepositoryImpl(
         return newsRepository.isArticleSaved(url) > 0
     }
 
-    override suspend fun getSavedArticles(): Flow<List<Article>> {
-        return newsRepository.getSavedNews().map { articles ->
-            articles.map { it.toDomain() }
+    override fun getSavedArticles(): Flow<List<Article>> =
+        newsRepository.getSavedNews()
+            .map { articles -> articles.map { it.toDomain() } }
+            .onEach {
+            Log.d("Repository", "Thread: ${Thread.currentThread().name}")
         }
-    }
+//            .flowOn(Dispatchers.IO)
 }

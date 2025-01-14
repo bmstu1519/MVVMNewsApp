@@ -3,7 +3,7 @@ package com.zooro.mvvmnewsapp.domain.repository
 import com.zooro.mvvmnewsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
-interface ArticleUseCaseRepository {
+interface DatabaseArticleRepository {
 
     suspend fun saveArticle(article: Article)
 
@@ -11,5 +11,5 @@ interface ArticleUseCaseRepository {
 
     suspend fun isArticleSaved(url: String): Boolean
 
-    suspend fun getSavedArticles(): Flow<List<Article>>
+    fun getSavedArticles(): Flow<List<Article>>
 }
