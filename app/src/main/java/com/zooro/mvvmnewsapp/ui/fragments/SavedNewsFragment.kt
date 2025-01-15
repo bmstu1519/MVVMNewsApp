@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSavedNewsBinding
+import com.zooro.mvvmnewsapp.domain.model.PaginationState
 import com.zooro.mvvmnewsapp.ui.NewsActivity
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
 import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
@@ -42,6 +43,9 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
         setupClickListeners()
         observeUiState()
         setupSwipeToDelete()
+
+        viewModel.resetPaginationState()
+        viewModel.getSavedNews()
     }
 
     private fun setupSwipeToDelete() {
@@ -53,12 +57,19 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getSavedNews().collect { articles ->
-                    newsAdapter.differ.submitList(articles)
+                viewModel.state.collect { uiState ->
+                    setSavedArticle(uiState.paginationState)
                 }
             }
         }
     }
+    private fun setSavedArticle(paginationState: PaginationState?){
+        paginationState?.let { state ->
+            newsAdapter.differ.submitList(state.items)
+        }
+
+    }
+
 
     private fun setupClickListeners() {
         newsAdapter.setOnItemClickListener { article ->
