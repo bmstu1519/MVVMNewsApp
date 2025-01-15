@@ -2,7 +2,6 @@ package com.zooro.mvvmnewsapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -14,8 +13,7 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.databinding.ActivityNewsBinding
 import com.zooro.mvvmnewsapp.databinding.LayoutSubmenuBinding
-import com.zooro.mvvmnewsapp.ui.viewmodels.ArticleState
-import com.zooro.mvvmnewsapp.ui.viewmodels.NewsViewModel
+import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
 
 class NewsActivity : AppCompatActivity() {
 
@@ -24,7 +22,6 @@ class NewsActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var activityNewsBinding: ActivityNewsBinding
     private lateinit var submenuBinding: LayoutSubmenuBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +44,9 @@ class NewsActivity : AppCompatActivity() {
 
         viewModel.state
 
-        viewModel.observeState(this){
-            renderUi(it)
-        }
+//        viewModel.observeState(this){
+//            renderUi(it)
+//        }
     }
 
     private fun setupSubmenu(){
@@ -68,16 +65,16 @@ class NewsActivity : AppCompatActivity() {
         activityNewsBinding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
-    private fun renderUi(data: ArticleState) {
-        activityNewsBinding.btnSettings.isChecked = data.isShowMenu
-        if (data.isShowMenu) activityNewsBinding.submenu.open() else activityNewsBinding.submenu.close()
-
-        submenuBinding.switchMode.isChecked = data.isDarkMode
-        delegate.localNightMode =
-            if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-
-    }
+//    private fun renderUi(data: ArticleState) {
+//        activityNewsBinding.btnSettings.isChecked = data.isShowMenu
+//        if (data.isShowMenu) activityNewsBinding.submenu.open() else activityNewsBinding.submenu.close()
+//
+//        submenuBinding.switchMode.isChecked = data.isDarkMode
+//        delegate.localNightMode =
+//            if (data.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES
+//            else AppCompatDelegate.MODE_NIGHT_NO
+//
+//    }
 
 
 }

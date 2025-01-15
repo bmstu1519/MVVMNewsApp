@@ -1,7 +1,6 @@
-package com.zooro.mvvmnewsapp.data.api
+package com.zooro.mvvmnewsapp.data.network
 
-import com.zooro.mvvmnewsapp.data.models.NewsResponseDto
-import com.zooro.mvvmnewsapp.data.api.ApiSettings.Companion.API_KEY
+import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -8,18 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.ItemArticlePreviewBinding
-import com.zooro.mvvmnewsapp.data.models.ArticleDto
+import com.zooro.mvvmnewsapp.domain.model.Article
 
 class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
     inner class ArticleViewHolder(val binding: ItemArticlePreviewBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private val differCallback = object : DiffUtil.ItemCallback<ArticleDto>(){
-        override fun areItemsTheSame(oldItem: ArticleDto, newItem: ArticleDto): Boolean {
+    private val differCallback = object : DiffUtil.ItemCallback<Article>(){
+        override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
             return oldItem.url == newItem.url
         }
 
-        override fun areContentsTheSame(oldItem: ArticleDto, newItem: ArticleDto): Boolean {
+        override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
             return oldItem== newItem
         }
     }
@@ -45,7 +45,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
                 ivArticleImage.setImageResource(R.drawable.no_content)
             }
 
-            tvSource.text = article.source?.name
+            tvSource.text = article.newsSource?.name
             tvTitle.text = article.title
             tvDescription.text = article.description
             tvPublishedAt.text = article.publishedAt
@@ -56,9 +56,9 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
         }
     }
 
-    private var onItemClickListener: ((ArticleDto) -> Unit)? = null
+    private var onItemClickListener: ((Article) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (ArticleDto) -> Unit){
+    fun setOnItemClickListener(listener: (Article) -> Unit){
         onItemClickListener = listener
     }
 

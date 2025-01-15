@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.data.api
+package com.zooro.mvvmnewsapp.data.network
 
 class ApiSettings {
     companion object{

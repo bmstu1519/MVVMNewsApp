@@ -1,4 +1,4 @@
-package com.zooro.mvvmnewsapp.data.models
+package com.zooro.mvvmnewsapp.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,7 +14,7 @@ data class ArticleDto(
     val content: String?,
     val description: String?,
     val publishedAt: String?,
-    val source: Source?,
+    val newsSource: NewsSourceDto?,
     val title: String?,
     val url: String?,
     val urlToImage: String?
