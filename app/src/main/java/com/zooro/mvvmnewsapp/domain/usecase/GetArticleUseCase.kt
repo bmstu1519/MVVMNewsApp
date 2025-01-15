@@ -18,7 +18,7 @@ class GetArticleUseCase(
     private val _state = MutableStateFlow(ArticleState())
     val state = _state.asStateFlow()
 
-    operator fun invoke(
+    fun checkArticleSaved(
         article: Article
     ): Flow<ArticleState> = flow {
         try {
@@ -28,7 +28,7 @@ class GetArticleUseCase(
             when(isSaved){
                 true -> updateState(isArticleSaved = isSaved)
                 false -> {
-                    articleRepository.saveArticle(article)
+                    saveArticle(article)
                     updateState(isArticleSaved = isSaved)
                 }
                 null -> {
@@ -39,6 +39,10 @@ class GetArticleUseCase(
 
         }
     }
+
+    suspend fun deleteArticle(article: Article) = articleRepository.deleteArticle(article)
+
+    suspend fun saveArticle(article: Article) = articleRepository.saveArticle(article)
 
     private fun updateState(
         isArticleSaved: Boolean? = null
