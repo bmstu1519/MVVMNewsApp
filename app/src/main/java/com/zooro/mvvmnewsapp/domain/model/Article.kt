@@ -1,5 +1,9 @@
 package com.zooro.mvvmnewsapp.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Article(
     var id: Int? = null,
     val author: String?,
@@ -10,4 +14,4 @@ data class Article(
     val title: String?,
     val url: String?,
     val urlToImage: String?
-)
+): Parcelable
