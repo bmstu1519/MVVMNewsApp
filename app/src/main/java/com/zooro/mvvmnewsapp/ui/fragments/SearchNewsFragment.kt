@@ -26,7 +26,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: NewsAdapter
-    private lateinit var searchQuery: String
+    private var searchQuery: String = ""
     private lateinit var binding: FragmentSearchNewsBinding
 
     override fun onCreateView(
@@ -47,7 +47,8 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         setupSearchListener()
         observeUiState()
 
-        viewModel.searchNews(true)
+//        viewModel.searchNews(true)
+        viewModel.resetPaginationState()
     }
 
     private fun setupClickListeners() {
@@ -64,7 +65,8 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private fun setupSearchListener() {
         binding.etSearch.addTextChangedListener { editable ->
-            viewModel.updateSearchQuery(editable?.toString() ?: "")
+            searchQuery = editable?.toString() ?: ""
+            viewModel.searchNews(searchQuery)
         }
     }
 
@@ -115,7 +117,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
                     val shouldLoadMore = visibleItemCount + firstVisibleItemPosition >= totalItemCount - 5
                     if (shouldLoadMore) {
-                        viewModel.searchNews()
+                        viewModel.searchNews(searchQuery)
                     }
                 }
             }
