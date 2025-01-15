@@ -10,10 +10,16 @@ import com.zooro.mvvmnewsapp.data.db.ArticleDto
 import com.zooro.mvvmnewsapp.data.db.Converters
 import com.zooro.mvvmnewsapp.data.network.ApiSettings.Companion.BASE_URL
 import com.zooro.mvvmnewsapp.data.network.NewsApiService
+import com.zooro.mvvmnewsapp.data.repository.DatabaseArticleRepositoryImpl
 import com.zooro.mvvmnewsapp.data.repository.NetworkHelperRepositoryImpl
 import com.zooro.mvvmnewsapp.data.repository.NewsRepositoryImpl
+import com.zooro.mvvmnewsapp.domain.repository.DatabaseArticleRepository
 import com.zooro.mvvmnewsapp.domain.repository.NetworkHelperRepository
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
+import com.zooro.mvvmnewsapp.domain.usecase.GetArticleUseCase
+import com.zooro.mvvmnewsapp.domain.usecase.GetBreakingNewsUseCase
+import com.zooro.mvvmnewsapp.domain.usecase.GetSavedNewsUseCase
+import com.zooro.mvvmnewsapp.domain.usecase.GetSearchNewsUseCase
 import com.zooro.mvvmnewsapp.ui.viewmodel.ViewModelFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -41,10 +47,35 @@ object DependencyProvider {
     private val networkHelper: NetworkHelperRepository by lazy {
         NetworkHelperRepositoryImpl(applicationContext)
     }
+    private val databaseArticleRepository: DatabaseArticleRepository by lazy {
+        DatabaseArticleRepositoryImpl(newsRepository)
+    }
 
     val viewModelFactory: ViewModelFactory by lazy {
-        ViewModelFactory(newsRepository, networkHelper)
+        ViewModelFactory(
+            getBreakingNewsUseCase(),
+            getSearchNewsUseCase(),
+            getArticleUseCase(),
+            getSavedNewsUseCase()
+        )
     }
+
+    //usecase
+    fun getBreakingNewsUseCase(): GetBreakingNewsUseCase = GetBreakingNewsUseCase(
+        newsRepository, networkHelper
+    )
+
+    fun getSearchNewsUseCase(): GetSearchNewsUseCase = GetSearchNewsUseCase(
+        newsRepository, networkHelper
+    )
+
+    fun getArticleUseCase(): GetArticleUseCase = GetArticleUseCase(
+        databaseArticleRepository
+    )
+
+    fun getSavedNewsUseCase(): GetSavedNewsUseCase = GetSavedNewsUseCase(
+        databaseArticleRepository
+    )
 
 }
 
