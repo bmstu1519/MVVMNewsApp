@@ -93,4 +93,7 @@ dependencies {
     // Material Design
     implementation(libs.material)
     implementation(libs.webkit)
+
+    // Jetpack Paging3
+    implementation(libs.androidx.paging3)
 }
