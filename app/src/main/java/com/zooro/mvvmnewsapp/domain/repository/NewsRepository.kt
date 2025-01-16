@@ -1,7 +1,9 @@
 package com.zooro.mvvmnewsapp.domain.repository
 
+import androidx.paging.PagingData
 import com.zooro.mvvmnewsapp.data.db.ArticleDto
 import com.zooro.mvvmnewsapp.data.network.NewsResponseDto
+import com.zooro.mvvmnewsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
@@ -11,4 +13,6 @@ interface NewsRepository {
     suspend fun deleteArticle(article: ArticleDto)
     fun getSavedNews(): Flow<List<ArticleDto>>
     suspend fun isArticleSaved(url: String): Int
+
+    fun getNewsPagingFlow(searchQuery: String): Flow<PagingData<Article>>
 }

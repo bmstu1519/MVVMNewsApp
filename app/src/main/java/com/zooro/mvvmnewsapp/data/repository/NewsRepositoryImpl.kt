@@ -55,4 +55,21 @@ class NewsRepositoryImpl(
     override fun getSavedNews(): Flow<List<ArticleDto>> = db.getArticleDao().getAllArticles()
 
     override suspend fun isArticleSaved(url: String): Int = db.getArticleDao().getArticleUrl(url)
+
+    override fun getNewsPagingFlow(searchQuery: String): Flow<PagingData<Article>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = ITEMS_PER_PAGE,
+                enablePlaceholders = false,
+                maxSize = ITEMS_PER_PAGE * 3
+            ),
+            pagingSourceFactory = {
+                ArticlePagingSource(this, searchQuery)
+            }
+        ).flow
+    }
+
+    companion object {
+        const val ITEMS_PER_PAGE = 20
+    }
 }
