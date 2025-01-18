@@ -13,6 +13,4 @@ interface NewsRepository {
     suspend fun deleteArticle(article: ArticleDto)
     fun getSavedNews(): Flow<List<ArticleDto>>
     suspend fun isArticleSaved(url: String): Int
-
-    fun getNewsPagingFlow(searchQuery: String): Flow<PagingData<Article>>
 }

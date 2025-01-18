@@ -7,8 +7,9 @@ import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.repository.NewsRepository
 
 class ArticlePagingSource(
-    private val newsRepository: NewsRepository,
-    private val searchQuery: String
+//    private val newsRepository: NewsRepository,
+//    private val searchQuery: String,
+    private val articleList: List<Article>,
 ) : PagingSource<Int, Article>() {
 
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
@@ -19,27 +20,34 @@ class ArticlePagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
-        return try {
-            val page = params.key ?: 1
+        val page = params.key ?: 1
 
-            val response = newsRepository.searchNews(searchQuery, page)
-
-            response.fold(
-                onSuccess = { newsResponseDto ->
-                    val articles = newsResponseDto.articles.map { it.toDomain() }
-
-                    LoadResult.Page(
-                        data = articles,
-                        prevKey = if (page == 1) null else page - 1,
-                        nextKey = if (articles.isEmpty()) null else page + 1
-                    )
-                },
-                onFailure = { throwable ->
-                    LoadResult.Error(throwable)
-                }
-            )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
-        }
+        return LoadResult.Page(
+            data = articleList,
+            prevKey = if (page == 1) null else page - 1,
+            nextKey = if (articleList.isEmpty()) null else page + 1
+        )
+//        return try {
+//            val page = params.key ?: 1
+//
+//            val response = newsRepository.searchNews(searchQuery, page)
+//
+//            response.fold(
+//                onSuccess = { newsResponseDto ->
+//                    val articles = newsResponseDto.articles.map { it.toDomain() }
+//
+//                    LoadResult.Page(
+//                        data = articles,
+//                        prevKey = if (page == 1) null else page - 1,
+//                        nextKey = if (articles.isEmpty()) null else page + 1
+//                    )
+//                },
+//                onFailure = { throwable ->
+//                    LoadResult.Error(throwable)
+//                }
+//            )
+//        } catch (e: Exception) {
+//            LoadResult.Error(e)
+//        }
     }
 }
