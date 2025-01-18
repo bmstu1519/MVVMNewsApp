@@ -32,7 +32,7 @@ class NewsRepositoryImpl(
     override suspend fun searchNews(
         searchQuery: String,
         pageNumber: Int
-    ): Result<NewsResponseDto> = runCatching { api.searchForNews(searchQuery, pageNumber) }
+    ): Result<NewsResponseDto> = runCatching { mock.searchForNews(searchQuery, pageNumber) }
         .fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
@@ -55,4 +55,5 @@ class NewsRepositoryImpl(
     override fun getSavedNews(): Flow<List<ArticleDto>> = db.getArticleDao().getAllArticles()
 
     override suspend fun isArticleSaved(url: String): Int = db.getArticleDao().getArticleUrl(url)
+
 }
