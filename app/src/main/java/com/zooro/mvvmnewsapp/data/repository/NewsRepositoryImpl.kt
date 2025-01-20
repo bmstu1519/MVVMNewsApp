@@ -55,4 +55,5 @@ class NewsRepositoryImpl(
     override fun getSavedNews(): Flow<List<ArticleDto>> = db.getArticleDao().getAllArticles()
 
     override suspend fun isArticleSaved(url: String): Int = db.getArticleDao().getArticleUrl(url)
+
 }

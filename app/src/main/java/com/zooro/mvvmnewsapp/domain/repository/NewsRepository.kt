@@ -1,7 +1,9 @@
 package com.zooro.mvvmnewsapp.domain.repository
 
+import androidx.paging.PagingData
 import com.zooro.mvvmnewsapp.data.db.ArticleDto
 import com.zooro.mvvmnewsapp.data.network.NewsResponseDto
+import com.zooro.mvvmnewsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
