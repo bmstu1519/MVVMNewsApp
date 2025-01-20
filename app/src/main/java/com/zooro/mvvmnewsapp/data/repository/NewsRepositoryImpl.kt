@@ -32,7 +32,7 @@ class NewsRepositoryImpl(
     override suspend fun searchNews(
         searchQuery: String,
         pageNumber: Int
-    ): Result<NewsResponseDto> = runCatching { mock.searchForNews(searchQuery, pageNumber) }
+    ): Result<NewsResponseDto> = runCatching { api.searchForNews(searchQuery, pageNumber) }
         .fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
