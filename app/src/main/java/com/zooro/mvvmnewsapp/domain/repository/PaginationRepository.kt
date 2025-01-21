@@ -5,5 +5,6 @@ import com.zooro.mvvmnewsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
 interface PaginationRepository {
-    fun getNewsPagingFlow(items: List<Article>): Flow<PagingData<Article>>
+    fun getSearchNews(inputQuery: String): Flow<PagingData<Article>>
+    fun getBreakingNews(countryCode: String): Flow<PagingData<Article>>
 }
