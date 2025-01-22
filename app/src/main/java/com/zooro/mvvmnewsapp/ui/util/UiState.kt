@@ -1,0 +1,7 @@
+package com.zooro.mvvmnewsapp.ui.util
+
+data class UiState<T>(
+    val data: T? = null,
+    val errorMessage: String? = null,
+    val isLoading: Boolean = false
+)
