@@ -43,7 +43,7 @@ class BreakingNewsViewModel(
                         errorMessage = e.message
                     )
                 }
-                .collectLatest { pagingData ->
+                .collect { pagingData ->
                     _state.value = UiState(
                         data = pagingData,
                         isLoading = false,
