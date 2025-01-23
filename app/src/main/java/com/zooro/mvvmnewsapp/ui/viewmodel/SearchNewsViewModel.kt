@@ -21,8 +21,8 @@ class SearchNewsViewModel(
     private val pagingRepository: NewsApiRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(UiState<PagingData<Article>>())
-    val uiState = _uiState.asStateFlow()
+    private val _state = MutableStateFlow(UiState<PagingData<Article>>())
+    val state = _state.asStateFlow()
 
     private val currentSearchQuery = MutableStateFlow("")
 
@@ -38,7 +38,7 @@ class SearchNewsViewModel(
         viewModelScope.launch {
             currentSearchQuery
                 .onStart {
-                    _uiState.value = UiState(
+                    _state.value = UiState(
                         isLoading = true
                     )
                 }
@@ -50,7 +50,7 @@ class SearchNewsViewModel(
                         pagingRepository.getSearchNews(query)
                             .cachedIn(viewModelScope)
                             .collect { pagingData ->
-                                _uiState.value = UiState(
+                                _state.value = UiState(
                                     data = pagingData,
                                     isLoading = false,
                                     errorMessage = null
@@ -58,7 +58,7 @@ class SearchNewsViewModel(
                             }
                     } catch (e: Exception) {
                         if (e !is CancellationException) {
-                            _uiState.value = UiState(
+                            _state.value = UiState(
                                 data = null,
                                 isLoading = false,
                                 errorMessage = e.localizedMessage

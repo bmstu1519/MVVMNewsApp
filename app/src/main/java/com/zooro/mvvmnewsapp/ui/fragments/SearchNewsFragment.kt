@@ -66,7 +66,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collectLatest { state ->
+            viewModel.state.collectLatest { state ->
                 when {
                     state.isLoading -> {
 //                        binding.progressBar.isVisible = true
