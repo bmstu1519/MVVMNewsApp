@@ -86,6 +86,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.fragment)
 
+    // SwipeRefresh
+    implementation(libs.androidx.swipeRefresh)
+
     // Glide
     implementation(libs.glide)
     ksp(libs.glideCompiler)
@@ -96,4 +99,7 @@ dependencies {
 
     // Jetpack Paging3
     implementation(libs.androidx.paging3)
+
+    // Leakcanary
+    debugImplementation(libs.leakcanary.android)
 }
