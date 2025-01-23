@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zooro.mvvmnewsapp.R
@@ -66,22 +68,16 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.state.collectLatest { state ->
-                when {
-                    state.isLoading -> {
-//                        binding.progressBar.isVisible = true
-//                        binding.errorLayout.isVisible = false
-                    }
-                    state.errorMessage != null -> {
-//                        binding.progressBar.isVisible = false
-//                        binding.errorLayout.isVisible = true
-//                        binding.errorMessage.text = state.errorMessage
-                        handleError(state.errorMessage)
-                    }
-                    state.data != null -> {
-//                        binding.progressBar.isVisible = false
-//                        binding.errorLayout.isVisible = false
-                        newsAdapter.submitData(state.data)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    when {
+                        state.isLoading -> { }
+                        state.errorMessage != null -> {
+                            handleError(state.errorMessage)
+                        }
+                        state.data != null -> {
+                            newsAdapter.submitData(state.data)
+                        }
                     }
                 }
             }
