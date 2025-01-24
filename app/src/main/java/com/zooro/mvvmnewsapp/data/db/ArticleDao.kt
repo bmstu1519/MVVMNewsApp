@@ -17,7 +17,7 @@ interface ArticleDao {
     suspend fun deleteArticle(article: ArticleDto)
 
     @Query("SELECT * FROM articles")
-    fun getAllArticles(): Flow<List<ArticleDto>>
+    fun getSavedArticles(): Flow<List<ArticleDto>>
 
     @Query("SELECT COUNT(*) FROM articles WHERE url=:url")
     suspend fun getArticleUrl(url: String) : Int
