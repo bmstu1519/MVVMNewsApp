@@ -23,6 +23,13 @@
             android:clipToPadding="false"
             android:paddingBottom="50dp" />
 
+        <include
+            android:id="@+id/emptyList"
+            layout="@layout/no_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <ProgressBar
@@ -30,8 +37,9 @@
         style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="center"
         android:background="@android:color/transparent"
-        android:visibility="invisible" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </FrameLayout>
