@@ -3,7 +3,7 @@ package com.zooro.mvvmnewsapp.domain.repository
 import com.zooro.mvvmnewsapp.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
-interface DatabaseArticleRepository {
+interface ArticleRepository {
 
     suspend fun saveArticle(article: Article)
 

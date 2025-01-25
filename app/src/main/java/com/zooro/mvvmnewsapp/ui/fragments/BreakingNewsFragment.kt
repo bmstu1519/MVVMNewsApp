@@ -8,22 +8,22 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
-import com.zooro.mvvmnewsapp.domain.model.PaginationState
-import com.zooro.mvvmnewsapp.ui.NewsActivity
-import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
-import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
+import com.zooro.mvvmnewsapp.di.DependencyProvider
+import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapterV2
+import com.zooro.mvvmnewsapp.ui.viewmodel.BreakingNewsViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
-    private lateinit var viewModel: NewsViewModel
-    private lateinit var newsAdapter: NewsAdapter
+    private lateinit var viewModel: BreakingNewsViewModel
+    private lateinit var newsAdapter: NewsAdapterV2
     private lateinit var binding: FragmentBreakingNewsBinding
 
     override fun onCreateView(
@@ -37,13 +37,21 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as NewsActivity).viewModel
-        setupRecyclerView()
-        setupPagination()
-        setupClickListeners()
-        observeUiState()
+        val viewModelFactory = DependencyProvider.viewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory)[BreakingNewsViewModel::class.java]
 
-        viewModel.getBreakingNews("us", isFirstLoad = true)
+        setupRecyclerView()
+        setupClickListeners()
+        setupSwipeRefresh()
+        observeUiState()
+    }
+
+    private fun setupRecyclerView() {
+        newsAdapter = NewsAdapterV2()
+        binding.rvBreakingNews.apply {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
     }
 
     private fun setupClickListeners() {
@@ -58,67 +66,40 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
         }
     }
 
-    private fun observeUiState() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { uiState ->
-                    handlePagination(uiState.paginationState)
-                    handleError(uiState.errorMessage)
-                }
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                viewModel.refresh()
             }
         }
     }
 
-    private fun handlePagination(paginationState: PaginationState?) {
-        paginationState?.let { state ->
-            newsAdapter.differ.submitList(state.items)
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest { state ->
+                    binding.swipeRefresh.isRefreshing = state.isLoading
 
-            binding.paginationProgressBar.isVisible = state.isLoading
+                    binding.rvBreakingNews.isVisible = !state.isLoading && state.data != null
 
-            if (state.isLastPage) {
-                binding.rvBreakingNews.setPadding(0, 0, 0, 0)
+                    binding.paginationProgressBar.isVisible = state.isLoading
+                    when {
+                        state.isLoading -> { }
+                        state.errorMessage != null -> {
+                            handleError(state.errorMessage)
+                        }
+                        state.data != null -> {
+                            newsAdapter.submitData(state.data)
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun handleError(errorMessage: String?) {
         errorMessage?.let {
-            Toast.makeText(activity, "An error occurred: $it", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show()
         }
     }
-
-    private fun setupPagination() {
-        binding.rvBreakingNews.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                if (dy > 0) {
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    val visibleItemCount = layoutManager.childCount
-                    val totalItemCount = layoutManager.itemCount
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-
-                    val shouldLoadMore = visibleItemCount + firstVisibleItemPosition >= totalItemCount - 5
-                    if (shouldLoadMore) {
-                        viewModel.getBreakingNews("us")
-                    }
-                }
-            }
-        })
-    }
-
-    private fun setupRecyclerView() {
-        newsAdapter = NewsAdapter()
-        binding.rvBreakingNews.apply {
-            adapter = newsAdapter
-            layoutManager = LinearLayoutManager(activity)
-        }
-    }
-
-//    private fun setupSwipeToRefresh() {
-//        binding.swipeRefreshLayout.setOnRefreshListener {
-//            viewModel.getBreakingNews("us", isFirstLoad = true)
-//            binding.swipeRefreshLayout.isRefreshing = false
-//        }
-//    }
 }

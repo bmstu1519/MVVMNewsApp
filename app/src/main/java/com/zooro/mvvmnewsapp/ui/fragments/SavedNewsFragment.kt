@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -15,15 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSavedNewsBinding
-import com.zooro.mvvmnewsapp.domain.model.PaginationState
-import com.zooro.mvvmnewsapp.ui.NewsActivity
+import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
-import com.zooro.mvvmnewsapp.ui.viewmodel.NewsViewModel
+import com.zooro.mvvmnewsapp.ui.viewmodel.SavedNewsViewModel
 import kotlinx.coroutines.launch
 
 class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 
-    lateinit var viewModel: NewsViewModel
+    lateinit var viewModel: SavedNewsViewModel
     lateinit var newsAdapter: NewsAdapter
     lateinit var binding: FragmentSavedNewsBinding
 
@@ -38,14 +38,13 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as NewsActivity).viewModel
+        val viewModelFactory = DependencyProvider.viewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory)[SavedNewsViewModel::class.java]
         setupRecyclerView()
         setupClickListeners()
         observeUiState()
         setupSwipeToDelete()
 
-        viewModel.resetPaginationState()
-        viewModel.getSavedNews()
     }
 
     private fun setupSwipeToDelete() {
@@ -57,17 +56,11 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collect { uiState ->
-                    setSavedArticle(uiState.paginationState)
+                viewModel.articles.collect { articles ->
+                    newsAdapter.differ.submitList(articles)
                 }
             }
         }
-    }
-    private fun setSavedArticle(paginationState: PaginationState?){
-        paginationState?.let { state ->
-            newsAdapter.differ.submitList(state.items)
-        }
-
     }
 
 
@@ -105,15 +98,28 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val article = newsAdapter.differ.currentList[position]
-                viewModel.deleteArticle(article)
-                Snackbar.make(requireView(), "Successfully deleted article", Snackbar.LENGTH_LONG).apply {
-                    setAction("Undo") {
-                        viewModel.saveArticle(article)
-                    }
-                    show()
+                val position = viewHolder.bindingAdapterPosition
+                val currentList = newsAdapter.differ.currentList.toMutableList()
+                val article = currentList[position]
+
+                currentList.removeAt(position)
+                newsAdapter.differ.submitList(currentList)
+
+                val snackbar = Snackbar.make(requireView(), "Статья удалена", Snackbar.LENGTH_LONG)
+                snackbar.setAction("Отменить") {
+                    val updatedList = newsAdapter.differ.currentList.toMutableList()
+                    updatedList.add(position, article)
+                    newsAdapter.differ.submitList(updatedList)
                 }
+
+                snackbar.addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        if (event != DISMISS_EVENT_ACTION) {
+                            viewModel.deleteArticle(article)
+                        }
+                    }
+                })
+                snackbar.show()
             }
         }
     }
