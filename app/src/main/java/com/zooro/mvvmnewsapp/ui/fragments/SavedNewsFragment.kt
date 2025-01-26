@@ -13,11 +13,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSavedNewsBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapter
+import com.zooro.mvvmnewsapp.ui.util.showSnackbar
 import com.zooro.mvvmnewsapp.ui.viewmodel.SavedNewsViewModel
 import kotlinx.coroutines.launch
 
@@ -104,22 +104,18 @@ class SavedNewsFragment : Fragment(R.layout.fragment_saved_news) {
 
                 currentList.removeAt(position)
                 newsAdapter.differ.submitList(currentList)
-
-                val snackbar = Snackbar.make(requireView(), "Статья удалена", Snackbar.LENGTH_LONG)
-                snackbar.setAction("Отменить") {
-                    val updatedList = newsAdapter.differ.currentList.toMutableList()
-                    updatedList.add(position, article)
-                    newsAdapter.differ.submitList(updatedList)
-                }
-
-                snackbar.addCallback(object : Snackbar.Callback() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        if (event != DISMISS_EVENT_ACTION) {
-                            viewModel.deleteArticle(article)
-                        }
-                    }
-                })
-                snackbar.show()
+                showSnackbar(
+                    message = "Статья удалена",
+                    actionText = "Отменить",
+                    action = {
+                        val updatedList = newsAdapter.differ.currentList.toMutableList()
+                        updatedList.add(position, article)
+                        newsAdapter.differ.submitList(updatedList)
+                    },
+                    dismissAction = {
+                        viewModel.deleteArticle(article)
+                    },
+                )
             }
         }
     }

@@ -14,11 +14,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSearchNewsBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapterV2
+import com.zooro.mvvmnewsapp.ui.util.showSnackbar
 import com.zooro.mvvmnewsapp.ui.viewmodel.SearchNewsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -114,11 +114,11 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
             else -> "Произошла ошибка: ${throwable.message}"
         }
 
-        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
-            .setAction("Повторить") {
-                newsAdapter.retry()
-            }
-            .show()
+        showSnackbar(
+            message = errorMessage,
+            actionText = "Повторить",
+            action = { newsAdapter.retry() },
+        )
     }
 
     private fun setupRecyclerView() {
