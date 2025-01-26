@@ -11,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentArticleBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
+import com.zooro.mvvmnewsapp.ui.util.showSnackbar
 import com.zooro.mvvmnewsapp.ui.viewmodel.ArticleNewsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -56,15 +56,13 @@ class ArticleNewsFragment : Fragment(R.layout.fragment_article) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.snackBarMessage.collectLatest { message ->
-                    makeToast(message)
+                    message?.let {
+                        showSnackbar(
+                            message = message,
+                        )
+                    }
                 }
             }
-        }
-    }
-
-    private fun makeToast(message: String?) {
-        message?.let { m ->
-            Snackbar.make(requireView(), m, Snackbar.LENGTH_SHORT).show()
         }
     }
 }

@@ -19,6 +19,7 @@ import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
 import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapterV2
+import com.zooro.mvvmnewsapp.ui.util.showSnackbar
 import com.zooro.mvvmnewsapp.ui.viewmodel.BreakingNewsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -126,10 +127,10 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
             else -> "Произошла ошибка: ${throwable.message}"
         }
 
-        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
-            .setAction("Повторить") {
-                newsAdapter.retry()
-            }
-            .show()
+        showSnackbar(
+            message = errorMessage,
+            actionText = "Повторить",
+            action = { newsAdapter.retry() },
+        )
     }
 }
