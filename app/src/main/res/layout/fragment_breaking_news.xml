@@ -17,6 +17,13 @@
             android:clipToPadding="false"
             android:paddingBottom="50dp" />
 
+        <include
+            android:id="@+id/emptyList"
+            layout="@layout/no_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar

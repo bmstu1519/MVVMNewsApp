@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentSearchNewsBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
@@ -20,6 +22,8 @@ import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapterV2
 import com.zooro.mvvmnewsapp.ui.viewmodel.SearchNewsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
@@ -69,14 +73,33 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    when {
-                        state.isLoading -> { }
-                        state.errorMessage != null -> {
-                            handleError(state.errorMessage)
-                        }
-                        state.data != null -> {
-                            newsAdapter.submitData(state.data)
+                launch {
+                    viewModel.searchNewsData.collectLatest { pagingData ->
+                        newsAdapter.submitData(pagingData)
+                    }
+                }
+                launch {
+                    newsAdapter.loadStateFlow.collectLatest { loadStates ->
+
+                        when(val refreshState = loadStates.refresh){
+                            is LoadState.Error -> {
+                                handleError(refreshState.error)
+                                binding.paginationProgressBar.isVisible = false
+                            }
+                            LoadState.Loading -> {
+                                binding.rvSearchNews.isVisible = false
+                                binding.paginationProgressBar.isVisible = true
+                            }
+                            is LoadState.NotLoading -> {
+                                if (newsAdapter.itemCount > 0) {
+                                    binding.rvSearchNews.isVisible = true
+                                    binding.paginationProgressBar.isVisible = false
+                                    binding.emptyList.noContent.isVisible = false
+                                } else {
+                                    binding.emptyList.noContent.isVisible = true
+                                    binding.paginationProgressBar.isVisible = false
+                                }
+                            }
                         }
                     }
                 }
@@ -84,17 +107,20 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
         }
     }
 
-    private fun handleError(errorMessage: String?) {
-        errorMessage?.let {
-            Toast.makeText(
-                activity,
-                errorMessage,
-//                "You have requested too many results.\n" +
-//                        "Developer accounts are limited to a max of 100 results.",
-                Toast.LENGTH_LONG
-            ).show()
+    private fun handleError(throwable: Throwable) {
+        val errorMessage = when (throwable) {
+            is IOException -> "Ошибка сети. Проверьте подключение"
+            is HttpException -> "Ошибка сервера: ${throwable.code()}"
+            else -> "Произошла ошибка: ${throwable.message}"
         }
+
+        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+            .setAction("Повторить") {
+                newsAdapter.retry()
+            }
+            .show()
     }
+
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapterV2()
         binding.rvSearchNews.apply {
