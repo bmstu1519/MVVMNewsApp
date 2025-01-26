@@ -55,8 +55,8 @@ class ArticleNewsFragment : Fragment(R.layout.fragment_article) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    makeToast(state.data?.snackBarMessage)
+                viewModel.snackBarMessage.collectLatest { message ->
+                    makeToast(message)
                 }
             }
         }

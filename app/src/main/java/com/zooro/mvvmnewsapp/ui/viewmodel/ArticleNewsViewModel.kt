@@ -4,24 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.repository.ArticleRepository
-import com.zooro.mvvmnewsapp.ui.util.UiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-data class ArticleState(
-    val snackBarMessage: String? = null
-)
 
 class ArticleNewsViewModel(
     private val articleRepository: ArticleRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(UiState<ArticleState>())
-    val state = _state.asStateFlow()
+    private val _snackBarMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val snackBarMessage = _snackBarMessage.asStateFlow()
 
     fun tryToSaveArticle(article: Article) {
         viewModelScope.launch {
@@ -29,17 +21,14 @@ class ArticleNewsViewModel(
                 val result = articleRepository.isArticleSaved(url)
                 when (result) {
                     true -> updateState(
-                        ArticleState(
-                            snackBarMessage = "You are already save this article",
-                        )
+                        data = "You are already save this article"
                     )
+
                     false -> saveArticle(article)
                 }
             }
             updateState(
-                ArticleState(
-                    snackBarMessage = null,
-                )
+                data = null,
             )
         }
     }
@@ -47,25 +36,13 @@ class ArticleNewsViewModel(
     private suspend fun saveArticle(article: Article) {
         articleRepository.saveArticle(article)
         updateState(
-            ArticleState(
-                snackBarMessage = "Article saved successfully",
-            )
+            data = "Article saved successfully"
         )
     }
 
-    private suspend fun updateState(
-        data: ArticleState? = null,
-        isLoading: Boolean = false,
-        errorMessage: String? = null
+    private fun updateState(
+        data: String?,
     ) {
-        withContext(Dispatchers.Main) {
-            _state.update { current ->
-                current.copy(
-                    data = data ?: current.data,
-                    isLoading = isLoading,
-                    errorMessage = errorMessage
-                )
-            }
-        }
+        _snackBarMessage.value = data
     }
 }
