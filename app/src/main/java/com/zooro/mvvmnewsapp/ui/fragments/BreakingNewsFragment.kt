@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.zooro.mvvmnewsapp.R
 import com.zooro.mvvmnewsapp.databinding.FragmentBreakingNewsBinding
 import com.zooro.mvvmnewsapp.di.DependencyProvider
@@ -20,6 +22,8 @@ import com.zooro.mvvmnewsapp.ui.adapters.NewsAdapterV2
 import com.zooro.mvvmnewsapp.ui.viewmodel.BreakingNewsViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     private lateinit var viewModel: BreakingNewsViewModel
@@ -77,19 +81,37 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.state.collectLatest { state ->
-                    binding.swipeRefresh.isRefreshing = state.isLoading
+                launch {
+                    viewModel.breakingNewsData.collectLatest { pagingData ->
+                        newsAdapter.submitData(pagingData)
+                    }
+                }
+                launch {
+                    newsAdapter.loadStateFlow.collectLatest { loadStates ->
 
-                    binding.rvBreakingNews.isVisible = !state.isLoading && state.data != null
-
-                    binding.paginationProgressBar.isVisible = state.isLoading
-                    when {
-                        state.isLoading -> { }
-                        state.errorMessage != null -> {
-                            handleError(state.errorMessage)
-                        }
-                        state.data != null -> {
-                            newsAdapter.submitData(state.data)
+                        when(val refreshState = loadStates.refresh){
+                            is LoadState.Error -> {
+                                handleError(refreshState.error)
+                                binding.paginationProgressBar.isVisible = false
+                                binding.swipeRefresh.isRefreshing = false
+                            }
+                            LoadState.Loading -> {
+                                binding.rvBreakingNews.isVisible = false
+                                binding.paginationProgressBar.isVisible = true
+                                binding.swipeRefresh.isRefreshing = false
+                            }
+                            is LoadState.NotLoading -> {
+                                if (newsAdapter.itemCount > 0) {
+                                    binding.rvBreakingNews.isVisible = true
+                                    binding.swipeRefresh.isRefreshing = false
+                                    binding.paginationProgressBar.isVisible = false
+                                    binding.emptyList.noContent.isVisible = false
+                                } else {
+                                    binding.emptyList.noContent.isVisible = true
+                                    binding.paginationProgressBar.isVisible = false
+                                    binding.swipeRefresh.isRefreshing = false
+                                }
+                            }
                         }
                     }
                 }
@@ -97,9 +119,17 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
         }
     }
 
-    private fun handleError(errorMessage: String?) {
-        errorMessage?.let {
-            Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show()
+    private fun handleError(throwable: Throwable) {
+        val errorMessage = when (throwable) {
+            is IOException -> "Ошибка сети. Проверьте подключение"
+            is HttpException -> "Ошибка сервера: ${throwable.code()}"
+            else -> "Произошла ошибка: ${throwable.message}"
         }
+
+        Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG)
+            .setAction("Повторить") {
+                newsAdapter.retry()
+            }
+            .show()
     }
 }
