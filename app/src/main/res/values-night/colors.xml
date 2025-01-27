@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">#121212</color>
-    <color name="color_primary_dark">#000000</color>
-    <color name="color_accent">#BB86FC</color>
-    <color name="color_accent_dark">#52337C</color>
-    <color name="color_surface">#1E1E1E</color>
-    <color name="color_on_surface">#BABABA</color>
-    <color name="color_gray">#4E545F</color>
-    <color name="color_gray_light">#272727</color>
-    <color name="color_title">#BABABA</color>
+    <!-- Основные цвета -->
+    <color name="color_primary">#B8A5FF</color>
+    <color name="color_primary_dark">#2D1766</color>
+    <color name="color_accent">#FFB4B4</color>
+    <color name="color_accent_dark">#FF8989</color>
 
-    <color name="color_article_bar">#121212</color>
-    <color name="color_on_article_bar">#FFFFFF</color>
+    <!-- Поверхности -->
+    <color name="color_surface">#1C1B1F</color>
+    <color name="color_on_surface">#E6E1E5</color>
+
+    <color name="color_gray">#9CA9BA</color>
+    <color name="color_gray_light">#2F2F2F</color>
+
+    <color name="color_title">#E6E1E5</color>
+    <color name="color_background">#121212</color>
+
+    <!-- Цвета для панели статей -->
+    <color name="color_article_bar">#2D2D2D</color>
+    <color name="color_on_article_bar">#E6E1E5</color>
+
+    <!-- Material 3 контейнеры -->
+    <color name="color_primary_container">#4A3880</color>
+    <color name="color_on_primary_container">#E8DEF8</color>
+    <color name="color_secondary_container">#633B3B</color>
+    <color name="color_on_secondary_container">#FFB4B4</color>
+
+    <!-- Варианты поверхностей -->
+    <color name="color_surface_variant">#49454F</color>
+    <color name="color_on_surface_variant">#CAC4D0</color>
+
+    <!-- Дополнительные цвета -->
+    <color name="color_outline">#938F99</color>
+    <color name="color_error">#FFB4AB</color>
+    <color name="color_on_error">#690005</color>
 </resources>
