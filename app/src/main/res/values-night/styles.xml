@@ -1,0 +1,17 @@
+<resources>
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Те же атрибуты, но с цветами для темной темы -->
+        <item name="colorPrimary">@color/color_primary_dark</item>
+        <item name="colorPrimaryDark">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_title</item>
+
+        <item name="colorSecondary">@color/color_accent_dark</item>
+        <item name="colorSecondaryContainer">@color/color_accent</item>
+
+        <item name="colorSurface">#1C1B1F</item>
+        <item name="colorOnSurface">#E6E1E5</item>
+
+        <item name="android:windowBackground">#1C1B1F</item>
+        <!-- ... остальные атрибуты ... -->
+    </style>
+</resources>
