@@ -49,7 +49,7 @@ class NewsAdapterV2 : PagingDataAdapter<Article, NewsAdapterV2.ArticleViewHolder
                     ivArticleImage.setImageResource(R.drawable.no_content)
                 }
 
-                tvSource.text = articleItem.newsSource?.name
+                tvSource.text = articleItem.author
                 tvTitle.text = articleItem.title
                 tvDescription.text = articleItem.description
                 tvPublishedAt.text = articleItem.publishedAt

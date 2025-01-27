@@ -45,7 +45,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
                 ivArticleImage.setImageResource(R.drawable.no_content)
             }
 
-            tvSource.text = article.newsSource?.name
+            tvSource.text = article.author
             tvTitle.text = article.title
             tvDescription.text = article.description
             tvPublishedAt.text = article.publishedAt
