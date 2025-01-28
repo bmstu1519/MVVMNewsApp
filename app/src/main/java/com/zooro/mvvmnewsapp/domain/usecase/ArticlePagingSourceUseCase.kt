@@ -9,7 +9,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-class ArticlePagingSource(
+class ArticlePagingSourceUseCase(
     private val block: suspend (Int) -> Response<NewsResponseDto>
 ) : PagingSource<Int, Article>() {
 
