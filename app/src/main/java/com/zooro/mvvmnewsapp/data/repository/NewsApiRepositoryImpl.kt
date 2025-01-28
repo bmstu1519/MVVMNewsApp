@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.zooro.mvvmnewsapp.data.network.NewsApiService
 import com.zooro.mvvmnewsapp.domain.model.Article
 import com.zooro.mvvmnewsapp.domain.repository.NewsApiRepository
-import com.zooro.mvvmnewsapp.domain.usecase.ArticlePagingSource
+import com.zooro.mvvmnewsapp.domain.usecase.ArticlePagingSourceUseCase
 import kotlinx.coroutines.flow.Flow
 
 class NewsApiRepositoryImpl(
@@ -15,7 +15,7 @@ class NewsApiRepositoryImpl(
 
     override fun getSearchNews(inputQuery: String): Flow<PagingData<Article>> {
         return Pager(PagingConfig(ITEMS_PER_PAGE)) {
-            ArticlePagingSource { page ->
+            ArticlePagingSourceUseCase { page ->
                 api.searchForNews(inputQuery, page)
             }
         }.flow
@@ -23,7 +23,7 @@ class NewsApiRepositoryImpl(
 
     override fun getBreakingNews(countryCode: String): Flow<PagingData<Article>> {
         return Pager(PagingConfig(ITEMS_PER_PAGE)) {
-            ArticlePagingSource { page ->
+            ArticlePagingSourceUseCase { page ->
                 api.getBreakingNews(countryCode, page)
             }
         }.flow
