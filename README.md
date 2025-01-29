@@ -42,9 +42,9 @@
 This application leverages [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) principles: </br>
 -  _presentation(ui)_: Android module **MVVM**-based. It contains the Android UI framework components (Activitie, Fragments, ViewModels...). This module just observes data coming from the undelying modules through Kotlin Flows and displays it.
 -  _domain_:
-    * **Use Cases**: Platform-independent business logic;
-    * **Models**: Platform-independent business models;
-    * **Repository Interfaces**: Act as abstract definitions for data operations, following the Repository pattern to isolate domain logic from data source implementations;
+   * **Use Cases**: Platform-independent business logic;
+   * **Models**: Platform-independent business models;
+   * **Repository Interfaces**: Act as abstract definitions for data operations, following the Repository pattern to isolate domain logic from data source implementations;
 -  _data_: Android module that acts as the **Single-Source-Of-Truth (SSOT)** of the App. It contains Repositories implementation, the Room Entities for persistence, the data source Api implementations and the corresponding api-specific models.
 -  _di_: It contains all the dependency injection related classes and interfaces.
 
@@ -74,12 +74,12 @@ The MVVM implementation consists of:
 The ViewModel communicates with the View through data streams, maintaining a clear separation between the UI and business logic layers.
 
 <div align="center">
-  <a href="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/diagrams/architecture_mvvm%2Bclean2.png" target="_blank">
+  <a href="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/diagrams/architecture_mvvm%2Bclean2.png" target="_blank" rel="noopener noreferrer">
     <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/diagrams/architecture_mvvm%2Bclean2.png" 
       width="1200">
   </a>
   <br>
-  <em>Diagram 2: Detailed Component Interaction Schema (click to enlarge)</em>
+  <em>Diagram 2: Detailed Component Interaction Schema (click to source)</em>
 </div>
 
 ## Technical Details
