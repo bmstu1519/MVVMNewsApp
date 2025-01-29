@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">#1C0E42</color>
-    <color name="color_primary_dark">#150A33</color>
+    <color name="color_primary">#F6F6F6</color>
+    <color name="color_primary_dark">#181D27</color>
     <color name="color_accent">#FC4C4C</color>
-    <color name="color_accent_dark">#D64141</color>
+    <color name="color_accent_dark">#2D716F</color>
     <color name="color_surface">#F6F6F6</color>
     <color name="color_on_surface">#202020</color>
     <color name="color_gray">#9ca9ba</color>
     <color name="color_gray_light">#EEEEEE</color>
     <color name="color_title">#F6F6F6</color>
     <color name="color_background">#EEEEEE</color>
-
     <color name="color_article_bar">#FFFFFF</color>
-    <color name="color_on_article_bar">#1C0E42</color>
+    <color name="color_on_article_bar">#181D27</color>
+
+    <color name="color_primary_container">#181D27</color>
+    <color name="color_on_primary_container">#F6F6F6</color>
+
+    <color name="color_secondary_container">#FFE2E2</color>
+    <color name="color_on_secondary_container">#690000</color>
+
+    <color name="color_surface_variant">#E7E0EC</color>
+    <color name="color_on_surface_variant">#49454F</color>
+
+    <color name="color_outline">#79747E</color>
+    <color name="color_error">#B3261E</color>
+    <color name="color_on_error">#FFFFFF</color>
 </resources>

@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.zooro.mvvmnewsapp"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
         versionCode = 2
         versionName = "2.0"

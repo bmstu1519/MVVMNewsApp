@@ -1,26 +1,55 @@
 <resources>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Основная тема приложения -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Настройки окна -->
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
 
-        <item name="android:textColorSecondary">@color/color_accent</item>
+        <!-- Стиль для самого Snackbar -->
+        <item name="snackbarStyle">@style/CustomSnackbarStyle</item>
+        <!-- Стиль для кнопки действия в Snackbar -->
+        <item name="snackbarButtonStyle">@style/CustomSnackbarButtonStyle</item>
+        <!-- Стиль для текста в Snackbar -->
+        <item name="snackbarTextViewStyle">@style/CustomSnackbarTextStyle</item>
+
+        <!-- Основные цвета Material 3 -->
         <item name="colorPrimary">@color/color_primary</item>
-        <item name="colorPrimaryVariant">@color/color_primary_dark</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorOnPrimary">@color/color_title</item>
+
+        <!-- Secondary colors -->
         <item name="colorSecondary">@color/color_accent</item>
-        <item name="colorSecondaryVariant">@color/color_accent_dark</item>
+        <item name="colorSecondaryContainer">@color/color_accent_dark</item>
         <item name="colorOnSecondary">@android:color/white</item>
-        <item name="colorError">#F44336</item>
-        <item name="colorOnError">#FFFFFF</item>
+
+        <!-- Surface colors -->
         <item name="colorSurface">@color/color_surface</item>
         <item name="colorOnSurface">@color/color_on_surface</item>
+
+        <!-- Error colors -->
+        <item name="colorError">#F44336</item>
+        <item name="colorOnError">#FFFFFF</item>
+
+        <!-- Текстовые цвета -->
         <item name="android:textColor">@color/color_on_surface</item>
-        <item name="android:textColorPrimary">@color/color_title</item>
+        <item name="android:textColorPrimary">@color/color_on_surface</item>
+        <item name="android:textColorSecondary">@color/color_on_surface_variant</item>
+
+        <!-- Фоновые цвета -->
         <item name="android:windowBackground">@color/color_surface</item>
 
+        <!-- Material 3 дополнительные атрибуты -->
+        <item name="colorPrimaryContainer">@color/color_primary_dark</item>
+        <item name="colorOnPrimaryContainer">@color/color_title</item>
+        <item name="colorSurfaceVariant">@color/color_gray_light</item>
+        <item name="colorOnSurfaceVariant">@color/color_on_surface_variant</item>
+
+        <!-- Bottom Navigation настройки -->
+        <item name="bottomNavigationStyle">@style/Widget.Material3.BottomNavigationView</item>
     </style>
-    <style name="ArticleBarsTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+    <!-- Тема для панелей статей -->
+    <style name="ArticleBarsTheme" parent="ThemeOverlay.Material3.Dark.ActionBar">
         <item name="colorPrimary">@color/color_article_bar</item>
         <item name="colorOnPrimary">@color/color_on_article_bar</item>
         <item name="colorSurface">@color/color_article_bar</item>
@@ -28,12 +57,50 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <!-- Настройки toolbar -->
     <style name="ToolbarSetting">
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
         <item name="android:padding">16dp</item>
         <item name="android:tint">@color/tint_color</item>
         <item name="android:background">@drawable/ripple</item>
+    </style>
+
+    <!-- Стиль для скругленных изображений -->
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <!-- Индикатор Bottom Navigation -->
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">?attr/colorSecondaryContainer</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button" parent="">
+        <item name="colorPrimary">@color/color_accent</item>
+        <item name="colorOnPrimary">@color/color_title</item>
+    </style>
+
+    <!-- Стиль самого Snackbar -->
+    <style name="CustomSnackbarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">@color/color_on_surface_variant</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <!-- Стиль кнопки действия -->
+    <style name="CustomSnackbarButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textColor">?attr/colorButtonNormal</item>
+    </style>
+
+    <!-- Стиль текста -->
+    <style name="CustomSnackbarTextStyle" parent="Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:textColor">@color/color_title</item>
     </style>
 
 </resources>
