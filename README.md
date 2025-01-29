@@ -31,9 +31,9 @@
 <br>
 
 <p float="center">
-  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/breaking_news.png" width="33%" />
-  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/saved_news.png" width="33%" />
-  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/search_news.png" width="33%" />
+  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/breaking_news.png" width="30%" />
+  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/saved_news.png" width="30%" />
+  <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/.github/assets/screenshots/search_news.png" width="30%" />
 <!--   <img src="https://github.com/bmstu1519/MVVMNewsApp/blob/master/app/src/main/res/drawable/no_content.png" width="23%" /> -->
 </p>
 
